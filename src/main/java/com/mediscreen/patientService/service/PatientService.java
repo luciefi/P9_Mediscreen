@@ -33,4 +33,9 @@ public class PatientService implements IPatientService {
     public void updatePatient(Patient patient) {
          repository.save(patient);
     }
+
+    @Override
+    public void deletePatient(long id) {
+        repository.deleteById(id);
+    }
 }

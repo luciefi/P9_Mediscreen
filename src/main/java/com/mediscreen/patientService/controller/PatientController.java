@@ -65,15 +65,35 @@ public class PatientController {
     }
 
     @PostMapping("/update/{id}")
-    public String updatePatient(@PathVariable("id") int id, @Valid Patient patient, BindingResult result) {
+    public String updatePatient(@PathVariable("id") long id, @Valid Patient patient, BindingResult result) {
         if (result.hasErrors()) {
             logger.info("Cannot update patient : invalid form");
             return "updatePatient";
         }
         service.updatePatient(patient);
-        logger.info("Patient updated");
+        logger.info("Patient with id: " + id + " updated");
         return "redirect:/patient/list";
     }
+
+    @GetMapping("/delete/{id}")
+    public String deletePatientForm(@PathVariable("id") long id, Model model) {
+        try {
+            Patient patient = service.getPatient(id);
+            model.addAttribute("patient", patient);
+            return "deletePatient";
+        } catch (PatientNotFoundException e) {
+            logger.info("Cannot delete patient : " + e.getMessage());
+            return "redirect:/patient/list";
+        }
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deletePatient(@PathVariable("id") long id) {
+        service.deletePatient(id);
+        logger.info("Patient with id: " + id + " deleted");
+        return "redirect:/patient/list";
+    }
+
 
 
 }

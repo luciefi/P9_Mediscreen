@@ -47,7 +47,7 @@
                         <a th:href="@{/patient/update/{id}(id=${patient.id})}" class="btn btn-info">
                             Update
                         </a>
-                        <a class="btn btn-dark" href="">
+                        <a class="btn btn-dark" th:href="@{/patient/delete/{id}(id=${patient.id})}" >
                             Delete
                         </a>
                     </td>

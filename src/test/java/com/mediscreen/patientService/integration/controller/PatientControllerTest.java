@@ -111,4 +111,36 @@ public class PatientControllerTest {
         verify(service, Mockito.never()).updatePatient(any(Patient.class));
     }
 
+
+    @Test
+    public void deletePatientForm() throws Exception {
+        Patient patient = new Patient();
+        when(service.getPatient(anyLong())).thenReturn(patient);
+        mockMvc.perform(get("/patient/delete/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("deletePatient"))
+                .andExpect(content().string(containsString("Delete Patient")));
+        verify(service, Mockito.times(1)).getPatient(1l);
+    }
+
+    @Test
+    public void deletePatientFormNotFound() throws Exception {
+        when(service.getPatient(anyLong())).thenThrow(PatientNotFoundException.class);
+        mockMvc.perform(get("/patient/delete/1"))
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/patient/list"));
+        verify(service, Mockito.times(1)).getPatient(1l);
+    }
+
+    @Test
+    public void deletePatientPostTest() throws Exception {
+        mockMvc.perform(post("/patient/delete/1"))
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/patient/list"));
+        verify(service, Mockito.times(1)).deletePatient(1l);
+    }
+
 }

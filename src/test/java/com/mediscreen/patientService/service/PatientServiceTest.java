@@ -81,4 +81,13 @@ public class PatientServiceTest {
         // Assert
         verify(repository, times(1)).save(any(Patient.class));
     }
+
+    @Test
+    void deletePatients() {
+        // Act
+        service.deletePatient(1l);
+
+        // Assert
+        verify(repository, times(1)).deleteById(1l);
+    }
 }

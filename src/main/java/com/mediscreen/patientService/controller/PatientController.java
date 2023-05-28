@@ -1,5 +1,6 @@
 package com.mediscreen.patientService.controller;
 
+import com.mediscreen.patientService.exception.PatientNotFoundException;
 import com.mediscreen.patientService.model.Patient;
 import com.mediscreen.patientService.service.IPatientService;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -51,20 +53,25 @@ public class PatientController {
     }
 
     @GetMapping("/update/{id}")
-    public String updatePatientForm(Model model) {
-        Patient patient = service.getPatient(1l);
-        model.addAttribute("patient", patient);
-        return "addPatient";
+    public String updatePatientForm(@PathVariable("id") long id, Model model) {
+        try {
+            Patient patient = service.getPatient(id);
+            model.addAttribute("patient", patient);
+            return "updatePatient";
+        } catch (PatientNotFoundException e) {
+            logger.info("Cannot update patient : " + e.getMessage());
+            return "redirect:/patient/list";
+        }
     }
 
     @PostMapping("/update/{id}")
-    public String updatePatient(@Valid Patient patient, BindingResult result) {
+    public String updatePatient(@PathVariable("id") int id, @Valid Patient patient, BindingResult result) {
         if (result.hasErrors()) {
-            logger.info("Cannot add patient : invalid form");
-            return "addPatient";
+            logger.info("Cannot update patient : invalid form");
+            return "updatePatient";
         }
-        service.saveNewPatient(patient);
-        logger.info("New patient added");
+        service.updatePatient(patient);
+        logger.info("Patient updated");
         return "redirect:/patient/list";
     }
 

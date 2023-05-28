@@ -39,6 +39,14 @@ public class Patient {
     @NotBlank(message = "Phone number cannot be empty.")
     private String phone;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getFamilyName() {
         return familyName;
     }

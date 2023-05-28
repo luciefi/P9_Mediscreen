@@ -1,5 +1,6 @@
 package com.mediscreen.patientService.service;
 
+import com.mediscreen.patientService.exception.PatientNotFoundException;
 import com.mediscreen.patientService.model.Patient;
 import com.mediscreen.patientService.repository.PatientRepository;
 import org.junit.jupiter.api.Test;
@@ -8,9 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class})
 public class PatientServiceTest {
@@ -39,5 +42,43 @@ public class PatientServiceTest {
 
         // Assert
         verify(repository, times(1)).findAll();
+    }
+
+    @Test
+    void getPatient() {
+        // Arrange
+        Patient patient = new Patient();
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(patient));
+
+        // Act
+        service.getPatient(1l);
+
+        // Assert
+        verify(repository, times(1)).findById(1l);
+    }
+
+    @Test
+    void getPatientNotFound() {
+        // Arrange
+        when(repository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // Act
+        assertThrows(PatientNotFoundException.class, () -> service.getPatient(1l));
+
+        // Assert
+        verify(repository, times(1)).findById(1l);
+    }
+
+
+    @Test
+    void updatePatient() {
+        // Arrange
+        Patient patient = new Patient();
+
+        // Act
+        service.updatePatient(patient);
+
+        // Assert
+        verify(repository, times(1)).save(any(Patient.class));
     }
 }

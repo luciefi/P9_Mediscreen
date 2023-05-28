@@ -1,5 +1,6 @@
 package com.mediscreen.patientService.integration.controller;
 
+import com.mediscreen.patientService.exception.PatientNotFoundException;
 import com.mediscreen.patientService.model.Patient;
 import com.mediscreen.patientService.service.IPatientService;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,14 +38,14 @@ public class PatientControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("addPatient"))
-                .andExpect(content().string(containsString("Add new patient")));
+                .andExpect(content().string(containsString("Add New Patient")));
     }
 
     @Test
-    public void createProfilePostTest() throws Exception {
+    public void addPatientPostTest() throws Exception {
         mockMvc.perform(post("/patient/add")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .content("family=TestNone&given=Test&dob=1966-12-31&sex=F&address=1 Brookside St&phone=100-222-3333")
+                        .content("familyName=TestNone&givenName=Test&dateOfBirth=1966-12-31&sex=F&address=1BrooksideSt&phone=100-222-3333")
                 )
                 .andDo(print())
                 .andExpect(status().isFound())
@@ -51,10 +54,10 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void createProfilePostFormErrorTest() throws Exception {
-        mockMvc.perform(post("/createProfile")
+    public void addPatientPostFormErrorTest() throws Exception {
+        mockMvc.perform(post("/patient/add")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .content("family=TestNone&given=Test&dob=1966-12-31&sex=F&address=1 Brookside St")
+                        .content("familyName=TestNone&givenName=Test&dateOfBirth=1966-12-31&sex=F&address=1BrooksideSt&phone=")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -63,13 +66,49 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void getPatientList() throws Exception {
-        mockMvc.perform(get("/patient/list"))
+    public void updatePatientForm() throws Exception {
+        Patient patient = new Patient();
+        when(service.getPatient(anyLong())).thenReturn(patient);
+        mockMvc.perform(get("/patient/update/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("patientList"))
-                .andExpect(content().string(containsString("Patient list")));
-        verify(service, Mockito.times(1)).getAllPatients();
+                .andExpect(view().name("updatePatient"))
+                .andExpect(content().string(containsString("Update Patient")));
+        verify(service, Mockito.times(1)).getPatient(1l);
+    }
+
+    @Test
+    public void updatePatientFormNotFound() throws Exception {
+        when(service.getPatient(anyLong())).thenThrow(PatientNotFoundException.class);
+        mockMvc.perform(get("/patient/update/1"))
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/patient/list"));
+        verify(service, Mockito.times(1)).getPatient(1l);
+    }
+
+    @Test
+    public void updatePatientPostTest() throws Exception {
+        mockMvc.perform(post("/patient/update/1")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("familyName=TestNone&givenName=Test&dateOfBirth=1966-12-31&sex=F&address=1BrooksideSt&phone=100-222-3333")
+                )
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/patient/list"));
+        verify(service, Mockito.times(1)).updatePatient(any(Patient.class));
+    }
+
+    @Test
+    public void updatePatientPostFormErrorTest() throws Exception {
+        mockMvc.perform(post("/patient/update/1")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("familyName=TestNone&givenName=Test&dateOfBirth=1966-12-31&sex=F&address=1BrooksideSt&phone=")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("updatePatient"));
+        verify(service, Mockito.never()).updatePatient(any(Patient.class));
     }
 
 }

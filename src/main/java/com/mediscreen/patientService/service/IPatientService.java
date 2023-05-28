@@ -10,4 +10,6 @@ public interface IPatientService {
     List<Patient> getAllPatients();
 
     Patient getPatient(long l);
+
+    void updatePatient(Patient patient);
 }

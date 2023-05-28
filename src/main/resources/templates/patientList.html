@@ -44,7 +44,7 @@
                     <td><span th:text="${patient.sex}"></span></td>
                     <td><span th:text="${patient.dateOfBirth}"></span></td>
                     <td>
-                        <a href="" class="btn btn-info">
+                        <a th:href="@{/patient/update/{id}(id=${patient.id})}" class="btn btn-info">
                             Update
                         </a>
                         <a class="btn btn-dark" href="">

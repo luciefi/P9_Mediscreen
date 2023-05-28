@@ -28,4 +28,9 @@ public class PatientService implements IPatientService {
     public Patient getPatient(long id) {
         return repository.findById(id).orElseThrow(PatientNotFoundException::new);
     }
+
+    @Override
+    public void updatePatient(Patient patient) {
+         repository.save(patient);
+    }
 }

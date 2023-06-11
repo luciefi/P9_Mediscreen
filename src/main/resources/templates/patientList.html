@@ -34,10 +34,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:if="${patients.size() == 0}">
+                <tr th:if="${patientPage.content.size() == 0}">
                     <td colspan="4">No patient found</td>
                 </tr>
-                <tr th:each="patient: ${patients}">
+                <tr th:each="patient: ${patientPage.content}">
                     <td><a th:href="@{/patient/details/{id}(id=${patient.id})}" th:text="|${patient.familyName} ${patient.givenName}|"></a></td>
                     <td><span th:text="${patient.sex}"></span></td>
                     <td><span th:text="${patient.dateOfBirth}"></span></td>
@@ -45,7 +45,7 @@
                         <a th:href="@{/patient/update/{id}(id=${patient.id})}" class="btn btn-info">
                             Update
                         </a>
-                        <a class="btn btn-dark" th:href="@{/patient/delete/{id}(id=${patient.id})}" >
+                        <a class="btn btn-secondary" th:href="@{/patient/delete/{id}(id=${patient.id})}" >
                             Delete
                         </a>
                     </td>
@@ -53,6 +53,26 @@
                 </tbody>
             </table>
         </div>
+        <nav aria-label="Page navigation" th:if="${patientPage.totalPages > 1}">
+            <ul class="pagination m-2 justify-content-center">
+                <li class="page-item" th:if="${patientPage.number > 0}">
+                    <a class="page-link" th:href="@{/patient/list(page=${patientPage.number})}">
+                        &#171;
+                    </a>
+                </li>
+                <li th:attr="class=${pageNumber == (patientPage.number + 1) ? 'active page-item' : 'page-item'}"
+                    th:each="pageNumber : ${pageNumbers}">
+                    <a th:href="@{/patient/list(page=${pageNumber})}"
+                       th:text=${pageNumber}
+                       class="page-link"></a>
+                </li>
+                <li th:if="${patientPage.number < patientPage.totalPages - 1}" class="page-item">
+                    <a class="page-link" th:href="@{/patient/list(page=${patientPage.number + 2})}">
+                        &#187;
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 </body>

@@ -27,8 +27,7 @@
             <table class="table table-striped ">
                 <thead class="bg-info text-white">
                 <tr>
-                    <th>Family name</th>
-                    <th>Given name</th>
+                    <th>Name</th>
                     <th>Sex</th>
                     <th>Date of birth</th>
                     <th></th>
@@ -39,8 +38,7 @@
                     <td colspan="4">No patient found</td>
                 </tr>
                 <tr th:each="patient: ${patients}">
-                    <td><span th:text="${patient.familyName}"></span></td>
-                    <td><span th:text="${patient.givenName}"></span></td>
+                    <td><a th:href="@{/patient/details/{id}(id=${patient.id})}" th:text="|${patient.familyName} ${patient.givenName}|"></a></td>
                     <td><span th:text="${patient.sex}"></span></td>
                     <td><span th:text="${patient.dateOfBirth}"></span></td>
                     <td>

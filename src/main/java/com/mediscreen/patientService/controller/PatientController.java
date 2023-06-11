@@ -52,6 +52,17 @@ public class PatientController {
         return "patientList";
     }
 
+    @GetMapping("/details/{id}")
+    public String getDetailsPatientForm(@PathVariable("id") long id, Model model) {
+        try {
+            Patient patient = service.getPatient(id);
+            model.addAttribute("patient", patient);
+            return "patientDetails";
+        } catch (PatientNotFoundException e) {
+            logger.info("Cannot get patient details : " + e.getMessage());
+            return "redirect:/patient/list";
+        }
+    }
     @GetMapping("/update/{id}")
     public String updatePatientForm(@PathVariable("id") long id, Model model) {
         try {

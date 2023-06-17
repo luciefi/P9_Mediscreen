@@ -26,21 +26,7 @@ public class PatientService implements IPatientService {
 
     @Override
     public Page<Patient> getAllPatientsPaginated(Pageable pageable) {
-
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = (currentPage) * pageSize;
-        List<Patient> patientList = repository.findAll();
-        List<Patient> patientsForPage;
-
-        if (patientList.size() < startItem) {
-            patientsForPage = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, patientList.size());
-            patientsForPage = patientList.subList(startItem, toIndex);
-        }
-
-        return new PageImpl<>(patientsForPage, PageRequest.of(currentPage, pageSize), patientList.size());
+        return repository.findAll(pageable);
     }
 
     @Override

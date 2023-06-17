@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -79,10 +80,13 @@ public class PatientController {
     }
 
     @GetMapping("/update/{id}")
-    public String updatePatientForm(@PathVariable("id") long id, Model model) {
+    public String updatePatientForm(@PathVariable("id") long id, @RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer, Model model) {
         try {
             Patient patient = service.getPatient(id);
             model.addAttribute("patient", patient);
+            String cancelUrl = referrer != null && referrer.contains("/patient/details/") ? "/patient/details/" + id : "/patient/list";
+            model.addAttribute("cancelUrl", cancelUrl);
+
             return "updatePatient";
         } catch (PatientNotFoundException e) {
             logger.info("Cannot update patient : " + e.getMessage());

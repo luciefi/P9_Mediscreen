@@ -15,22 +15,20 @@
         </a>
         <div class="card text-dark bg-light my-3">
             <div class="card-body">
-                <h2 class="card-title text-center">Patient details</h2>
-                <div class="d-flex align-items-center justify-content-center my-3">
-                    <a th:href="@{/patient/update/{id}(id=${patient.id})}" class="btn btn-info m-1">
-                        Update
-                    </a>
-                    <a th:href="@{/patient/details/{id}(id=${patient.id})}" class="btn btn-info m-1"> <!-- TODO sprint 2-->
-                        See Notes
-                    </a>
-                    <a th:href="@{/patient/details/{id}(id=${patient.id})}" class="btn btn-info m-1"> <!-- TODO sprint 3-->
-                        Diabetes risk
-                    </a>
-                </div>
-                <hr/>
-                <form method="post"
-                      th:action="@{/patient/update/{id}(id=${patient.id})}" th:object="${patient}">
+                <h2 class="card-title text-center my-3" th:text="|${patient.familyName} ${patient.givenName}|"></h2>
+                <ul class="nav nav-tabs justify-content-center">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Notes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Diabetes risk</a>
+                    </li>
+                </ul>
 
+                <div th:object="${patient}">
                     <div class="row m-3">
                         <div class="col-4 h6 p-1">Family name</div>
                         <p th:text="*{familyName}" class="col-8 px-1"></p>
@@ -60,7 +58,13 @@
                         <div class="col-4 h6 p-1">Phone number</div>
                         <p th:text="*{phone}" class="px-1 col-8"></p>
                     </div>
-                </form>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center my-3">
+                    <a th:href="@{/patient/update/{id}(id=${patient.id})}" class="btn btn-primary m-1">
+                        Update
+                    </a>
+                </div>
             </div>
         </div>
     </div>

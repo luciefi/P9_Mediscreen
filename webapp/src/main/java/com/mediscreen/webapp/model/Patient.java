@@ -1,33 +1,26 @@
-package com.mediscreen.patientService.model;
+package com.mediscreen.webapp.model;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "patient")
 public class Patient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
-    @Column(name="family")
     @NotBlank(message = "Family name cannot be empty.")
     @Length(max=64, message = "Family name is too long.")
     private String familyName;
 
-    @Column(name="given")
     @NotBlank(message = "Given name cannot be empty.")
     @Length(max=64, message = "Given name is too long.")
     private String givenName;
 
-    @Column(name="dob")
     @PastOrPresent(message="Date of birth cannot be in the future")
     @NotNull(message="Date of birth cannot be empty")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -1,8 +1,7 @@
-package com.mediscreen.patientService.service;
+package com.mediscreen.webapp.service;
 
-import com.mediscreen.patientService.model.Patient;
+import com.mediscreen.webapp.model.Patient;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface IPatientService {
     void saveNewPatient(Patient patient);

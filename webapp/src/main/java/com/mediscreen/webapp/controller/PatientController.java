@@ -1,8 +1,8 @@
-package com.mediscreen.patientService.controller;
+package com.mediscreen.webapp.controller;
 
-import com.mediscreen.patientService.exception.PatientNotFoundException;
-import com.mediscreen.patientService.model.Patient;
-import com.mediscreen.patientService.service.IPatientService;
+import com.mediscreen.webapp.exception.PatientNotFoundException;
+import com.mediscreen.webapp.model.Patient;
+import com.mediscreen.webapp.service.IPatientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 
 @Controller
 @RequestMapping("/patient")
@@ -50,10 +49,10 @@ public class PatientController {
     }
 
     @GetMapping("/list")
-    public String getPatientList(Model model, @RequestParam(name = "page", required = false) Optional<Integer> page) {
-        int currentPage = Math.max(page.orElse(1), 1);
+    public String getPatientList(Model model, @RequestParam(name = "page", required = false) Optional<Integer> pageNumber) {
+        int currentPage = Math.max(pageNumber.orElse(1), 1);
+        Page<Patient> patientPage = service.getAllPatientsPaginated(currentPage - 1, PATIENT_PER_PAGE);
 
-        Page<Patient> patientPage = service.getAllPatientsPaginated(PageRequest.of(currentPage - 1, PATIENT_PER_PAGE));
         model.addAttribute("patientPage", patientPage);
 
         int totalPages = patientPage.getTotalPages();
@@ -66,6 +65,8 @@ public class PatientController {
 
         return "patientList";
     }
+
+
 
     @GetMapping("/details/{id}")
     public String getDetailsPatientForm(@PathVariable("id") long id, Model model) {

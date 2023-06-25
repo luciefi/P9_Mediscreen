@@ -2,22 +2,18 @@ package com.mediscreen.patientService.service;
 
 import com.mediscreen.patientService.exception.PatientNotFoundException;
 import com.mediscreen.patientService.model.Patient;
-import com.mediscreen.patientService.repository.PatientRepository;
+import com.mediscreen.patientService.repository.PatientDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class PatientService implements IPatientService {
 
     @Autowired
-    private PatientRepository repository;
+    private PatientDetailsRepository repository;
 
     @Override
     public void saveNewPatient(Patient patient) {
@@ -25,8 +21,8 @@ public class PatientService implements IPatientService {
     }
 
     @Override
-    public Page<Patient> getAllPatientsPaginated(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Patient> getAllPatientsPaginated(int pageNumber, int itemPerPage) {
+        return repository.findAll(PageRequest.of(pageNumber, itemPerPage));
     }
 
     @Override
@@ -36,11 +32,13 @@ public class PatientService implements IPatientService {
 
     @Override
     public void updatePatient(Patient patient) {
+        getPatient(patient.getId());
         repository.save(patient);
     }
 
     @Override
     public void deletePatient(long id) {
+        getPatient(id);
         repository.deleteById(id);
     }
 }

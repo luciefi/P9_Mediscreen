@@ -1,20 +1,22 @@
-package com.mediscreen.patientService.integration.controller;
+package com.mediscreen.webapp.integration.controller;
 
-import com.mediscreen.patientService.exception.PatientNotFoundException;
-import com.mediscreen.patientService.model.Patient;
-import com.mediscreen.patientService.service.IPatientService;
+import com.mediscreen.webapp.exception.PatientNotFoundException;
+import com.mediscreen.webapp.model.Patient;
+import com.mediscreen.webapp.service.IPatientService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
+
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,6 +33,21 @@ public class PatientControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    void getPatientList() throws Exception {
+        // Arrange
+        Patient patient = new Patient();
+        when(service.getAllPatientsPaginated(anyInt(), anyInt())).thenReturn(new PageImpl<>(Collections.singletonList(patient)));
+
+        // Act
+        mockMvc.perform(get("/patient/list")
+                        .param("page", "2"))
+                .andExpect(status().isOk());
+
+        // Assert
+        verify(service, Mockito.times(1)).getAllPatientsPaginated(1, 3);
+    }
 
     @Test
     public void addPatientTest() throws Exception {
@@ -63,6 +80,17 @@ public class PatientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("addPatient"));
         verify(service, Mockito.never()).saveNewPatient(any(Patient.class));
+    }
+
+    @Test
+    public void patientDetails() throws Exception {
+        Patient patient = new Patient();
+        when(service.getPatient(anyLong())).thenReturn(patient);
+        mockMvc.perform(get("/patient/details/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("patientDetails"));
+        verify(service, Mockito.times(1)).getPatient(1l);
     }
 
     @Test

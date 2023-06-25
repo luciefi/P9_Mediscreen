@@ -1,10 +1,10 @@
-package com.medisite.patientDetailsService;
+package com.mediscreen.webapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PatientDetailsServiceApplicationTests {
+class WebAppApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -17,7 +17,6 @@ public class CustomPageImpl<T> extends PageImpl<T> {
                           @JsonProperty("number") int page,
                           @JsonProperty("size") int size,
                           @JsonProperty("totalElements") long total) {
-
         super(content, PageRequest.of(page, size), total);
     }
 

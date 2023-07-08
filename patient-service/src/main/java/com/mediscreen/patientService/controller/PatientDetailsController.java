@@ -8,14 +8,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/patientDetails")
+@Validated
 public class PatientDetailsController {
 
     @Autowired
@@ -31,8 +33,8 @@ public class PatientDetailsController {
 
     @GetMapping
     public Page<Patient> getPaginatedPatients(
-            @RequestParam(value = "pageNumber", required = false) int pageNumber,
-            @RequestParam(value = "itemPerPage", required = false) int itemPerPage) {
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) @Min(value = 0, message = "Page index must not be less than zero") Integer pageNumber,
+            @RequestParam(value = "itemPerPage", defaultValue = "10", required = false) @Min(value = 1, message = "Page size must not be less than one") Integer itemPerPage) {
         return service.getAllPatientsPaginated(pageNumber, itemPerPage);
     }
 
@@ -59,4 +61,6 @@ public class PatientDetailsController {
         logger.error("Not found exception: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    // TODO exceptionhandler pour ConstraintViolationException, retourner 400
 }

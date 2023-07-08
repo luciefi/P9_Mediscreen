@@ -9,9 +9,9 @@
 		<relativePath />
 	</parent>
 	<groupId>com.mediscreen</groupId>
-	<artifactId>patientService</artifactId>
+	<artifactId>patient-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>patientService</name>
+	<name>patient-service</name>
 	<description>microservice for patient details</description>
 	<properties>
 		<java.version>1.8</java.version>

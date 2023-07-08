@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -57,10 +58,14 @@ public class PatientDetailsController {
     }
 
     @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<?> handleException(Exception e) {
+    public ResponseEntity<?> handleNotFoundException(Exception e) {
         logger.error("Not found exception: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    // TODO exceptionhandler pour ConstraintViolationException, retourner 400
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<?> handleConstraintException(Exception e) {
+        logger.error("Invalid parameter: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

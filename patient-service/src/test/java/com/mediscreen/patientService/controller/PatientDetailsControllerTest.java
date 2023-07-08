@@ -150,7 +150,6 @@ class PatientDetailsControllerTest {
     @Test
     void handleException() throws Exception {
         // Arrange
-        Patient patient = new Patient();
         when(service.getPatient(anyLong())).thenThrow(PatientNotFoundException.class);
 
         // Act
@@ -160,4 +159,19 @@ class PatientDetailsControllerTest {
         // Assert
         verify(service, Mockito.times(1)).getPatient(1l);
     }
+
+    @Test
+    void handleInvalidParameterException() throws Exception {
+
+        // Act
+        mockMvc.perform(get("/patientDetails/")
+                        .param("pageNumber", "1")
+                        .param("itemPerPage","-3"))
+                .andExpect(status().isBadRequest());
+
+        // Assert
+        verify(service, Mockito.never()).getAllPatientsPaginated(anyInt(), anyInt());
+    }
+
+
 }

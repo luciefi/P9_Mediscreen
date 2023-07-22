@@ -1,8 +1,8 @@
-package com.mediscreen.patientService.controller;
+package com.mediscreen.notes.controller;
 
-import com.mediscreen.patientService.exception.NotFoundException;
-import com.mediscreen.patientService.model.Patient;
-import com.mediscreen.patientService.service.IPatientService;
+import com.mediscreen.notes.exception.NotFoundException;
+import com.mediscreen.notes.model.NoteEntity;
+import com.mediscreen.notes.service.INoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,43 +17,45 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 @RestController
-@RequestMapping("/patientDetails")
+@RequestMapping("/notes")
 @Validated
-public class PatientDetailsController {
+public class NoteController {
+    
+    @Autowired    
+    private INoteService service;
 
-    @Autowired
-    private IPatientService service;
-
-    Logger logger = LoggerFactory.getLogger(PatientDetailsController.class);
+    Logger logger = LoggerFactory.getLogger(NoteController.class);
 
     @GetMapping("/{id}")
-    public Patient getPatientById(@PathVariable("id") final Long id) {
-        return service.getPatient(id);
+    public NoteEntity getNoteById(@PathVariable("id") final String id) {
+        return service.getNote(id);
     }
 
+
     @GetMapping
-    public Page<Patient> getPaginatedPatients(
+    public Page<NoteEntity> getPaginatedNotes(
+            @RequestParam(value = "patientId", required = true) @Min(value = 1, message = "Patient Id must be valid") long patientId,
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) @Min(value = 0, message = "Page index must not be less than zero") Integer pageNumber,
             @RequestParam(value = "itemPerPage", defaultValue = "10", required = false) @Min(value = 1, message = "Page size must not be less than one") Integer itemPerPage) {
-        return service.getAllPatientsPaginated(pageNumber, itemPerPage);
+        return service.getAllNotesPaginated(patientId, pageNumber, itemPerPage);  // TODO patientnotfound ?
     }
 
     @PostMapping
-    public void addPatient(@Valid @RequestBody Patient patient) {
-        service.saveNewPatient(patient);
-        logger.info("New patient added");
+    public void addNote(@Valid @RequestBody NoteEntity noteEntity) { // TODO validation ?
+        service.saveNewNote(noteEntity);
+        logger.info("New note added");
     }
 
     @PutMapping
-    public void updateMedicalRecord(@Valid @RequestBody Patient patient) {
-        service.updatePatient(patient);
-        logger.info("Patient with id: " + patient.getId() + " updated");
+    public void updateMedicalRecord(@Valid @RequestBody NoteEntity noteEntity) { // TODO validation ?
+        service.updateNote(noteEntity);
+        logger.info("Note with id: " + noteEntity.getId() + " updated");
     }
 
     @DeleteMapping("/{id}")
-    public void deleteMedicalRecord(@PathVariable("id") final Long id) {
-        service.deletePatient(id);
-        logger.info("Patient with id: " + id + " deleted");
+    public void deleteMedicalRecord(@PathVariable("id") final String id) {
+        service.deleteNote(id);
+        logger.info("Note with id: " + id + " deleted");
     }
 
     @ExceptionHandler({NotFoundException.class})
@@ -67,4 +69,5 @@ public class PatientDetailsController {
         logger.error("Invalid parameter: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    
 }

@@ -1,7 +1,9 @@
 package com.mediscreen.webapp.client;
 
 import com.mediscreen.webapp.configuration.CustomFeignConfiguration;
-import com.mediscreen.webapp.model.Note;
+import com.mediscreen.webapp.model.note.NoteCreate;
+import com.mediscreen.webapp.model.note.NoteRead;
+import com.mediscreen.webapp.model.note.NoteUpdate;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -14,21 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface NoteClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    CustomPageImpl<Note> findAll(
+    CustomPageImpl<NoteRead> findAll(
             @RequestParam(value = "pageNumber", required = false) int pageNumber,
             @RequestParam(value = "itemPerPage", required = false) int itemPerPage);
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")
-    Note findById(@PathVariable("id") Long id);
+    NoteRead findById(@PathVariable("id") Long id);
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     @Headers("Content-Type: application/json")
-    void createNote(Note note);
+    void createNote(NoteCreate note);
 
     @RequestMapping(method = RequestMethod.PUT)
     @Headers("Content-Type: application/json")
-    void save(Note note);
+    void save(NoteUpdate note);
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     void deleteById(@PathVariable("id") Long id);

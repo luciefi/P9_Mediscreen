@@ -9,14 +9,15 @@ import java.util.Date;
 
 @Data
 @Document(collection = "notes")
-public class NoteEntity { // TODO créer model DTO (create), model entity, model create, model update, userId récupérer
+public class NoteEntity {
 
     @Id
     private String id;
 
     @Indexed
     private Long patientId;
-    private Long userId;
+    private Long createdByUserId;
+    private Long modifiedByUserId;
     private String content;
     private Date creationDate;
     private Date modificationDate;

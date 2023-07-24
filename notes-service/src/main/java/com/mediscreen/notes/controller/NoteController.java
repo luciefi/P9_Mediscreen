@@ -1,7 +1,10 @@
 package com.mediscreen.notes.controller;
 
 import com.mediscreen.notes.exception.NotFoundException;
-import com.mediscreen.notes.model.NoteEntity;
+import com.mediscreen.notes.mapper.NoteMapper;
+import com.mediscreen.notes.model.NoteCreate;
+import com.mediscreen.notes.model.NoteRead;
+import com.mediscreen.notes.model.NoteUpdate;
 import com.mediscreen.notes.service.INoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,36 +23,35 @@ import javax.validation.constraints.Min;
 @RequestMapping("/notes")
 @Validated
 public class NoteController {
-    
-    @Autowired    
+
+    @Autowired
     private INoteService service;
 
     Logger logger = LoggerFactory.getLogger(NoteController.class);
 
     @GetMapping("/{id}")
-    public NoteEntity getNoteById(@PathVariable("id") final String id) {
-        return service.getNote(id);
+    public NoteRead getNoteById(@PathVariable("id") final String id) {
+        return NoteMapper.convertToNoteRead(service.getNote(id));
     }
 
-
     @GetMapping
-    public Page<NoteEntity> getPaginatedNotes(
+    public Page<NoteRead> getPaginatedNotes(
             @RequestParam(value = "patientId", required = true) @Min(value = 1, message = "Patient Id must be valid") long patientId,
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) @Min(value = 0, message = "Page index must not be less than zero") Integer pageNumber,
             @RequestParam(value = "itemPerPage", defaultValue = "10", required = false) @Min(value = 1, message = "Page size must not be less than one") Integer itemPerPage) {
-        return service.getAllNotesPaginated(patientId, pageNumber, itemPerPage);  // TODO patientnotfound ?
+        return service.getAllNotesPaginated(patientId, pageNumber, itemPerPage).map(NoteMapper::convertToNoteRead);  // TODO patientnotfound ?
     }
 
     @PostMapping
-    public void addNote(@Valid @RequestBody NoteEntity noteEntity) { // TODO validation ?
-        service.saveNewNote(noteEntity);
+    public void addNote(@Valid @RequestBody NoteCreate note) { // TODO validation ?
+        service.saveNewNote(NoteMapper.convertToNoteEntity(note));
         logger.info("New note added");
     }
 
     @PutMapping
-    public void updateMedicalRecord(@Valid @RequestBody NoteEntity noteEntity) { // TODO validation ?
-        service.updateNote(noteEntity);
-        logger.info("Note with id: " + noteEntity.getId() + " updated");
+    public void updateMedicalRecord(@Valid @RequestBody NoteUpdate note) {
+        service.updateNote(NoteMapper.convertToNoteEntity(note));
+        logger.info("Note with id: " + note.getId() + " updated");
     }
 
     @DeleteMapping("/{id}")
@@ -69,5 +71,5 @@ public class NoteController {
         logger.error("Invalid parameter: {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
-    
+
 }

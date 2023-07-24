@@ -1,9 +1,8 @@
-package com.mediscreen.notes.model;
+package com.mediscreen.webapp.model.note;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 
 @Data
 public class NoteUpdate {

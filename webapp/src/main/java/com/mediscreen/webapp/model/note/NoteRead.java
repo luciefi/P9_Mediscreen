@@ -1,18 +1,14 @@
-package com.mediscreen.webapp.model;
+package com.mediscreen.webapp.model.note;
 
-import org.springframework.data.annotation.Id;
+import lombok.Data;
 
 import java.util.Date;
 
-public class Note {
-
-    @Id
+@Data
+public class NoteRead {
     private String id;
-
     private Long patientId;
-    private Long userId;
     private String content;
     private Date creationDate;
     private Date modificationDate;
-
 }

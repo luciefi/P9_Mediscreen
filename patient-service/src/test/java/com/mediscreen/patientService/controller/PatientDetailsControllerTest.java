@@ -135,10 +135,6 @@ class PatientDetailsControllerTest {
 
     @Test
     void deleteMedicalRecord() throws Exception {
-        // Arrange
-        Patient patient = new Patient();
-        when(service.getPatient(anyLong())).thenReturn(patient);
-
         // Act
         mockMvc.perform(delete("/patientDetails/1"))
                 .andExpect(status().isOk());

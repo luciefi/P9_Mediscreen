@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Note</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="container">
+    <div class="col-6 offset-3">
+        <a class="btn btn-link mt-3" th:href="@{/notes/{patientId}(patientId=${patient.id})}">
+            ← Back to list
+        </a>
+        <div class="card text-dark bg-light my-3">
+            <div class="card-body">
+                <h2 class="card-title text-center my-3"
+                    th:text="|${patient.familyName} ${patient.givenName}'s note|"></h2>
+
+                <div th:object="${note}">
+
+                    <div class="row m-3">
+                        <div class="col-4 h6 p-1">Content</div>
+                        <p th:text="*{content}" class="col-8 px-1"></p>
+                    </div>
+
+                    <div class=" row m-3">
+                        <div class="col-4 h6 p-1">Creation</div>
+                        <p th:text="${#dates.format(note.creationDate, 'dd-MM-yyyy HH:mm')}"
+                           class="px-1 col-8"></p>
+                    </div>
+
+                    <div class=" row m-3">
+                        <div class="col-4 h6 p-1">Last Modification</div>
+                        <p th:text="${#dates.format(note.modificationDate, 'dd-MM-yyyy HH:mm')}" class="px-1 col-8"></p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center my-3">
+                    <a th:href="@{/notes/{patientId}/update/{id}(patientId=${patient.id}, id=${note.id})}"
+                       class="btn btn-primary m-1">
+                        Update
+                    </a>
+                    <a th:href="@{/notes/{patientId}/delete/{id}(patientId=${patient.id}, id=${note.id})}"
+                       class="btn btn-danger m-1">
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

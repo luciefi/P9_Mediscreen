@@ -1,14 +1,28 @@
 package com.mediscreen.webapp.model.note;
 
-import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
 public class NoteUpdate {
     @NotBlank
     private String id;
 
-    @NotBlank
+    @NotBlank(message = "The note cannot be blank.")
     private String content;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

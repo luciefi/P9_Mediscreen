@@ -8,11 +8,13 @@ import org.springframework.data.domain.Page;
 public interface INoteService {
     void saveNewNote(NoteCreate note);
 
-    Page<NoteRead> getAllNotesPaginated(int pageNumber, int itemPerPage);
+    Page<NoteRead> getAllNotesPaginated(long patientId, int pageNumber, int itemPerPage);
 
-    NoteRead getNote(long l);
+    NoteRead getNote(String id);
 
     void updateNote(NoteUpdate note);
 
-    void deleteNote(long id);
+    void deleteNote(String id);
+
+    NoteUpdate getNoteUpdate(String id);
 }

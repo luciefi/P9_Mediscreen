@@ -8,7 +8,7 @@ public interface IPatientService {
 
     Page<Patient> getAllPatientsPaginated(int pageNumber, int itemPerPage);
 
-    Patient getPatient(long l);
+    Patient getPatient(long id);
 
     void updatePatient(Patient patient);
 

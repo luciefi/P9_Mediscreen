@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,7 +66,6 @@ public class PatientController {
     }
 
 
-
     @GetMapping("/details/{id}")
     public String getDetailsPatientForm(@PathVariable("id") long id, Model model) {
         try {
@@ -124,6 +122,5 @@ public class PatientController {
         logger.info("Patient with id: " + id + " deleted");
         return "redirect:/patient/list";
     }
-
 
 }

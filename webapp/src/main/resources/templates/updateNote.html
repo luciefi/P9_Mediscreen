@@ -23,9 +23,10 @@
                     <div class="card-text">
                         <div class=" m-3">
                             <label for="contentInput" class="form-label h6 p-1">Content</label>
-                            <input
-                                    type="text" th:field="*{content}" class="form-control" id="ContentInput"
+                            <textarea
+                                    th:field="*{content}" class="form-control" id="ContentInput"
                                     placeholder="Content">
+                                </textarea>
                             <div class="text-danger p-1">
                                 <small th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></small>
                             </div>

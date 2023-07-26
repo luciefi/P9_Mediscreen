@@ -67,11 +67,11 @@ public class NotesController {
     public String getNoteList(@PathVariable("patientId") long patientId, Model model, @RequestParam(name = "page", required = false) Optional<Integer> pageNumber) {
         try {
             int currentPage = Math.max(pageNumber.orElse(1), 1);
+            addPatientToModel(patientId, model);
+
             Page<NoteRead> notePage = noteService.getAllNotesPaginated(patientId, currentPage - 1, NOTE_PER_PAGE);
 
             model.addAttribute("notePage", notePage);
-            addPatientToModel(patientId, model);
-
             int totalPages = notePage.getTotalPages();
             if (totalPages > 0) {
                 List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -91,9 +91,9 @@ public class NotesController {
     @GetMapping("/{patientId}/{id}")
     public String getNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
         try {
+            addPatientToModel(patientId, model);
             NoteRead note = noteService.getNote(id);
             model.addAttribute("note", note);
-            addPatientToModel(patientId, model);
             return "note";
         } catch (NoteNotFoundException e) {
             logger.info("Cannot get note details : " + e.getMessage());
@@ -107,11 +107,11 @@ public class NotesController {
     @GetMapping("/{patientId}/update/{id}")
     public String updateNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, @RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer, Model model) {
         try {
+            addPatientToModel(patientId, model);
             NoteUpdate noteUpdate = noteService.getNoteUpdate(id);
             model.addAttribute("noteUpdate", noteUpdate);
             String cancelUrl = referrer != null && referrer.contains("/notes/" + patientId + "/" + id) ? "/notes/" + patientId + "/" + id : "/notes/" + patientId;
             model.addAttribute("cancelUrl", cancelUrl);
-            addPatientToModel(patientId, model);
 
             return "updateNote";
         } catch (NoteNotFoundException e) {
@@ -138,9 +138,9 @@ public class NotesController {
     @GetMapping("/{patientId}/delete/{id}")
     public String deleteNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
         try {
+            addPatientToModel(patientId, model);
             NoteRead note = noteService.getNote(id);
             model.addAttribute("note", note);
-            addPatientToModel(patientId, model);
             return "deleteNote";
         } catch (NoteNotFoundException e) {
             logger.info("Cannot delete note : " + e.getMessage());

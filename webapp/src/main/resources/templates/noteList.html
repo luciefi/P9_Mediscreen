@@ -52,8 +52,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body pt-0" th:text="${note.content}">
-                    </div>
+                    <pre class="card-body pt-0 text-wrap" th:text="${#strings.abbreviate(note.content,500)}">
+                    </pre>
                 </div>
 
                 <nav aria-label="Page navigation" th:if="${notePage.totalPages > 1}">

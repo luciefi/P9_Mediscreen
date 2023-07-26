@@ -16,15 +16,18 @@
         </a>
         <div class="card text-dark bg-light my-3">
             <div class="card-body">
-                <h2 class="px-2 card-title text-center"  th:text="|Add note for ${patient.familyName} ${patient.givenName}|"></h2>
+                <h2 class="px-2 card-title text-center"
+                    th:text="|Add note for ${patient.familyName} ${patient.givenName}|"></h2>
                 <form method="post"
                       th:action="@{/notes/{patientId}/add(patientId=${patient.id})}" th:object="${noteCreate}">
                     <div class="card-text">
                         <div class=" m-3">
                             <label for="contentInput" class="form-label h6 p-1">Content</label>
-                            <input
-                                    type="text" th:field="*{content}" class="form-control" id="ContentInput"
+                            <textarea
+                                    th:field="*{content}" class="form-control" id="ContentInput"
                                     placeholder="Content">
+                                </textarea>
+
                             <div class="text-danger p-1">
                                 <small th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></small>
                             </div>

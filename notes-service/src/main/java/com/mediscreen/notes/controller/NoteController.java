@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
@@ -43,7 +44,7 @@ public class NoteController {
     }
 
     @PostMapping
-    public void addNote(@Valid @RequestBody NoteCreate note) { // TODO validation ?
+    public void addNote(@Valid @RequestBody NoteCreate note) {
         service.saveNewNote(NoteMapper.convertToNoteEntity(note));
         logger.info("New note added");
     }
@@ -63,13 +64,13 @@ public class NoteController {
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<?> handleNotFoundException(Exception e) {
         logger.error("Not found exception: {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Not found exception: " + e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ConstraintViolationException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     public ResponseEntity<?> handleConstraintException(Exception e) {
         logger.error("Invalid parameter: {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Invalid parameter: {}" + e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

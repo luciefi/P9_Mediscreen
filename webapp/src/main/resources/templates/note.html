@@ -19,18 +19,15 @@
                     th:text="|${patient.familyName} ${patient.givenName}'s note|"></h2>
 
                 <div th:object="${note}">
-
                     <div class="row m-3">
                         <div class="col-4 h6 p-1">Content</div>
-                        <pre th:text="*{content}" class="col-8 px-1 text-wrap"></pre>
+                        <pre th:text="*{content}" class="col-8 px-1 "></pre>
                     </div>
-
                     <div class=" row m-3">
                         <div class="col-4 h6 p-1">Creation</div>
                         <p th:text="${#dates.format(note.creationDate, 'dd-MM-yyyy HH:mm')}"
                            class="px-1 col-8"></p>
                     </div>
-
                     <div class=" row m-3">
                         <div class="col-4 h6 p-1">Last Modification</div>
                         <p th:text="${#dates.format(note.modificationDate, 'dd-MM-yyyy HH:mm')}" class="px-1 col-8"></p>

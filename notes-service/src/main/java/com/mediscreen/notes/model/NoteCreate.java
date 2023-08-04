@@ -8,7 +8,7 @@ import javax.validation.constraints.Positive;
 
 @Data
 public class NoteCreate {
-    @Positive
+    @Positive(message = "patient id must be positive")
     @JsonProperty("patId")
     private long patientId;
 

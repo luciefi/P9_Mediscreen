@@ -34,6 +34,8 @@ public class PatientService implements IPatientService {
 
     @Override
     public void deletePatient(long id) {
+
         client.deleteById(id);
+        
     }
 }

@@ -8,6 +8,8 @@ services:
     image: webapp:latest
     ports:
       - 18888:8080
+    volumes:
+      - webapp-db:/home/node/app
     networks:
       - spring-cloud-network
   patient-service:
@@ -15,13 +17,26 @@ services:
     build:
       context: patient-service
       dockerfile: Dockerfile
-      extra_hosts:
-        host.docker.internal:127.0.0.1
     image: patient-service:latest
     ports:
       - 19999:8081
+    volumes:
+      - patient-service-db:/home/node/app
     networks:
       - spring-cloud-network
+  notes-service:
+    container_name: notes-service
+    build:
+      context: notes-service
+      dockerfile: Dockerfile
+    image: notes-service:latest
+    ports:
+      - 19999:8082
+    volumes:
+      - notes-service-db:/home/node/app
+    networks:
+      - spring-cloud-network
+volumes:
 networks:
   spring-cloud-network:
     driver: bridge

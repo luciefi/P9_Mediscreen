@@ -37,7 +37,7 @@ public class NoteController {
 
     @GetMapping
     public Page<NoteRead> getPaginatedNotes(
-            @RequestParam(value = "patientId", required = true) @Min(value = 1, message = "Patient Id must be valid") long patientId,
+            @RequestParam(value = "patientId", required = true) @Valid @Min(value = 1, message = "Patient Id must be valid") long patientId,
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) @Min(value = 0, message = "Page index must not be less than zero") Integer pageNumber,
             @RequestParam(value = "itemPerPage", defaultValue = "10", required = false) @Min(value = 1, message = "Page size must not be less than one") Integer itemPerPage) {
         return service.getAllNotesPaginated(patientId, pageNumber, itemPerPage).map(NoteMapper::convertToNoteRead);  // TODO patientnotfound ?
@@ -67,7 +67,7 @@ public class NoteController {
         return new ResponseEntity<>("Not found exception: " + e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
+    @ExceptionHandler({ ConstraintViolationException.class})
     public ResponseEntity<?> handleConstraintException(Exception e) {
         logger.error("Invalid parameter: {}", e.getMessage());
         return new ResponseEntity<>("Invalid parameter: {}" + e.getMessage(), HttpStatus.BAD_REQUEST);

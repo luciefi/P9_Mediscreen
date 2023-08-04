@@ -1,5 +1,6 @@
 package com.mediscreen.webapp.service;
 
+import com.mediscreen.webapp.client.NoteClient;
 import com.mediscreen.webapp.client.PatientClient;
 import com.mediscreen.webapp.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ public class PatientService implements IPatientService {
 
     @Autowired
     private PatientClient client;
+
+    @Autowired
+    private NoteClient noteClient;
 
     @Override
     public void saveNewPatient(Patient patient) {
@@ -33,9 +37,8 @@ public class PatientService implements IPatientService {
     }
 
     @Override
-    public void deletePatient(long id) {
-
-        client.deleteById(id);
-        
+    public void deletePatient(long patientId) {
+        client.deleteById(patientId);
+        noteClient.deleteByPatientId(patientId);
     }
 }

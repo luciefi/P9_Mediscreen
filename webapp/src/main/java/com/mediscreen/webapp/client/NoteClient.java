@@ -36,4 +36,7 @@ public interface NoteClient {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     void deleteById(@PathVariable("id") String id);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "patient/{patientId}")
+    void deleteByPatientId(@PathVariable("patientId") long id);
 }

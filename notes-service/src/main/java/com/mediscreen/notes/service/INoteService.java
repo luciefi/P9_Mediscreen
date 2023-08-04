@@ -14,4 +14,5 @@ public interface INoteService {
 
     void deleteNote(String id);
 
+    void deleteNotesForPatient(long patientId);
 }

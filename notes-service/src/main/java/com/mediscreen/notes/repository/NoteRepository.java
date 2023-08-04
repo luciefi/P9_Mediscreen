@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NoteRepository extends MongoRepository<NoteEntity, String> {
     Page<NoteEntity> findByPatientId(long patientId, PageRequest of);
+
+    void deleteByPatientId(long patientId);
 }

@@ -53,4 +53,9 @@ public class NoteService implements INoteService {
         getNote(id);
         repository.deleteById(id);
     }
+
+    @Override
+    public void deleteNotesForPatient(long patientId) {
+        repository.deleteByPatientId(patientId);
+    }
 }

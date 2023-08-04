@@ -146,4 +146,13 @@ class NoteServiceTest {
         verify(repository, times(1)).findById("123");
         verify(repository, times(0)).deleteById(anyString());
     }
+
+    @Test
+    void deleteNotesForPatient() {
+        // Act
+        service.deleteNotesForPatient(123);
+
+        // Assert
+        verify(repository, times(1)).deleteByPatientId(123);
+    }
 }

@@ -1,5 +1,6 @@
 package com.mediscreen.webapp.service;
 
+import com.mediscreen.webapp.client.NoteClient;
 import com.mediscreen.webapp.client.PatientClient;
 import com.mediscreen.webapp.model.Patient;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,9 @@ public class PatientServiceTest {
 
     @Mock
     private PatientClient client;
+
+    @Mock
+    private NoteClient noteClient;
 
     @InjectMocks
     private PatientService service;
@@ -73,6 +77,7 @@ public class PatientServiceTest {
 
         // Assert
         verify(client, times(1)).deleteById(1l);
+        verify(noteClient, times(1)).deleteByPatientId(1l);
     }
 
 }

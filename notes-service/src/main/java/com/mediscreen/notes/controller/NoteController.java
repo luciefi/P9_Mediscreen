@@ -40,7 +40,7 @@ public class NoteController {
             @RequestParam(value = "patientId", required = true) @Valid @Min(value = 1, message = "Patient Id must be valid") long patientId,
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) @Min(value = 0, message = "Page index must not be less than zero") Integer pageNumber,
             @RequestParam(value = "itemPerPage", defaultValue = "10", required = false) @Min(value = 1, message = "Page size must not be less than one") Integer itemPerPage) {
-        return service.getAllNotesPaginated(patientId, pageNumber, itemPerPage).map(NoteMapper::convertToNoteRead);  // TODO patientnotfound ?
+        return service.getAllNotesPaginated(patientId, pageNumber, itemPerPage).map(NoteMapper::convertToNoteRead);
     }
 
     @PostMapping
@@ -59,6 +59,12 @@ public class NoteController {
     public void deleteMedicalRecord(@PathVariable("id") final String id) {
         service.deleteNote(id);
         logger.info("Note with id: " + id + " deleted");
+    }
+
+    @DeleteMapping("/patient/{patientId}")
+    public void deleteMedicalRecordsForPatient(@PathVariable("patientId") final long patientId) {
+        service.deleteNotesForPatient(patientId);
+        logger.info("Notes for patient with id: " + patientId + " deleted");
     }
 
     @ExceptionHandler({NotFoundException.class})

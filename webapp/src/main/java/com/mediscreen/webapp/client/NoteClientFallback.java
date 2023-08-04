@@ -40,6 +40,10 @@ public class NoteClientFallback implements NoteClient {
         throwNoteNotFound(id);
     }
 
+    @Override
+    public void deleteByPatientId(long id) {
+    }
+
     private void throwNoteNotFound(String id) {
         logger.info("Note with id: " + id + " could not be found.");
         throw new NoteNotFoundException();

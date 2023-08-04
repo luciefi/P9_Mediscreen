@@ -6,7 +6,6 @@ import com.mediscreen.notes.service.INoteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,11 +59,11 @@ class NoteControllerTest {
         mockMvc.perform(get("/notes/")
                         .param("patientId", "1")
                         .param("pageNumber", "1")
-                        .param("itemPerPage","3"))
+                        .param("itemPerPage", "3"))
                 .andExpect(status().isOk());
 
         // Assert
-        verify(service, Mockito.times(1)).getAllNotesPaginated(1,1, 3);
+        verify(service, Mockito.times(1)).getAllNotesPaginated(1, 1, 3);
     }
 
     @ParameterizedTest
@@ -84,7 +81,7 @@ class NoteControllerTest {
                 .andExpect(status().isBadRequest());
 
         // Assert
-        verify(service, Mockito.times(0)).getAllNotesPaginated(anyLong(),anyInt(), anyInt());
+        verify(service, Mockito.times(0)).getAllNotesPaginated(anyLong(), anyInt(), anyInt());
     }
 
     @Test
@@ -151,6 +148,16 @@ class NoteControllerTest {
 
         // Assert
         verify(service, Mockito.times(1)).deleteNote("abcde");
+    }
+
+    @Test
+    void deleteNotesForPatient() throws Exception {
+        // Act
+        mockMvc.perform(delete("/notes/patient/123"))
+                .andExpect(status().isOk());
+
+        // Assert
+        verify(service, Mockito.times(1)).deleteNotesForPatient(123);
     }
 
     @Test

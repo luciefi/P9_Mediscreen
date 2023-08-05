@@ -39,14 +39,14 @@
                 </div>
 
                 <div class="card text-dark bg-light mb-1" th:each="note: ${notePage.content}">
-                    <div class="card-title container mt-3">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h6 class=""
+                    <div class="card-title mt-3">
+                        <div class="d-flex justify-content-between align-items-center px-3">
+                            <div class="h6 mb-0"
                                 th:text="${#dates.format(note.creationDate, 'dd-MM-yyyy HH:mm')}"
-                            ></h6>
+                            ></div>
                             <div class="">
                                 <a th:href="@{/notes/{patientId}/{id}(patientId=${patient.id}, id=${note.id})}"
-                                   class="btn btn-primary">
+                                   class="btn btn-primary btn-sm">
                                     See
                                 </a>
                             </div>
@@ -59,7 +59,8 @@
                 <nav aria-label="Page navigation" th:if="${notePage.totalPages > 1}">
                     <ul class="pagination m-2 justify-content-center">
                         <li class="page-item" th:if="${notePage.number > 0}">
-                            <a class="page-link" th:href="@{/notes/{patientId}/list(patientId=${patient.id}, page=${notePage.number})}">
+                            <a class="page-link"
+                               th:href="@{/notes/{patientId}/list(patientId=${patient.id}, page=${notePage.number})}">
                                 &#171;
                             </a>
                         </li>
@@ -70,7 +71,8 @@
                                class="page-link"></a>
                         </li>
                         <li th:if="${notePage.number < notePage.totalPages - 1}" class="page-item">
-                            <a class="page-link" th:href="@{/notes/{patientId}(patientId=${patient.id}, page=${notePage.number + 2})}">
+                            <a class="page-link"
+                               th:href="@{/notes/{patientId}(patientId=${patient.id}, page=${notePage.number + 2})}">
                                 &#187;
                             </a>
                         </li>

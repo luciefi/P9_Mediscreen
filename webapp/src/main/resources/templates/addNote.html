@@ -22,10 +22,9 @@
                       th:action="@{/notes/{patientId}/add(patientId=${patient.id})}" th:object="${noteCreate}">
                     <div class="card-text">
                         <div class=" m-3">
-                            <label for="contentInput" class="form-label h6 p-1">Content</label>
                             <textarea
                                     th:field="*{content}" class="form-control" id="ContentInput"
-                                    placeholder="Content">
+                                    placeholder="Content" style="height: 300px">
                                 </textarea>
 
                             <div class="text-danger p-1">

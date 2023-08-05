@@ -22,10 +22,9 @@
                       th:object="${noteUpdate}">
                     <div class="card-text">
                         <div class=" m-3">
-                            <label for="contentInput" class="form-label h6 p-1">Content</label>
                             <textarea
                                     th:field="*{content}" class="form-control" id="ContentInput"
-                                    placeholder="Content">
+                                    placeholder="Content"  style="height: 300px">
                                 </textarea>
                             <div class="text-danger p-1">
                                 <small th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></small>

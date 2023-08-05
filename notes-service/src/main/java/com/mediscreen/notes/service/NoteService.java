@@ -26,7 +26,7 @@ public class NoteService implements INoteService {
 
     @Override
     public Page<NoteEntity> getAllNotesPaginated(long patientId, int pageNumber, int itemPerPage) {
-        return repository.findByPatientId(patientId, PageRequest.of(pageNumber, itemPerPage));
+        return repository.findByPatientIdOrderByCreationDateDesc(patientId, PageRequest.of(pageNumber, itemPerPage));
     }
 
     @Override

@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -105,12 +104,12 @@ public class NotesController {
     }
 
     @GetMapping("/{patientId}/update/{id}")
-    public String updateNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, @RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer, Model model) {
+    public String updateNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
         try {
             addPatientToModel(patientId, model);
             NoteUpdate noteUpdate = noteService.getNoteUpdate(id);
             model.addAttribute("noteUpdate", noteUpdate);
-            String cancelUrl = referrer != null && referrer.contains("/notes/" + patientId + "/" + id) ? "/notes/" + patientId + "/" + id : "/notes/" + patientId;
+            String cancelUrl = "/notes/" + patientId;
             model.addAttribute("cancelUrl", cancelUrl);
 
             return "updateNote";

@@ -45,7 +45,7 @@
                                 th:text="${#dates.format(note.creationDate, 'dd-MM-yyyy HH:mm')}"
                             ></div>
                             <div class="">
-                                <a th:href="@{/notes/{patientId}/{id}(patientId=${patient.id}, id=${note.id})}"
+                                <a th:href="@{/notes/{patientId}/details/{id}(patientId=${note.patientId}, id=${note.id})}"
                                    class="btn btn-primary btn-sm">
                                     See
                                 </a>

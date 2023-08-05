@@ -59,7 +59,7 @@ public class NoteServiceTest {
     @Test
     void updateNote() {
         // Arrange
-        NoteUpdate note = new NoteUpdate();
+        NoteRead note = new NoteRead();
 
         // Act
         service.updateNote(note);

@@ -18,8 +18,8 @@
             <div class="card-body">
                 <h2 class="px-2 card-title text-center"  th:text="|Update ${patient.familyName} ${patient.givenName}'s note|"></h2>
                 <form method="post"
-                      th:action="@{/notes/{patientId}/update/{id}(patientId=${patient.id}, id=${noteUpdate.id})}"
-                      th:object="${noteUpdate}">
+                      th:action="@{/notes/{patientId}/update/{id}(patientId=${patient.id}, id=${noteRead.id})}"
+                      th:object="${noteRead}">
                     <div class="card-text">
                         <div class=" m-3">
                             <textarea

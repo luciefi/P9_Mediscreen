@@ -5,7 +5,6 @@ import com.mediscreen.webapp.exception.PatientNotFoundException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.model.note.NoteCreate;
 import com.mediscreen.webapp.model.note.NoteRead;
-import com.mediscreen.webapp.model.note.NoteUpdate;
 import com.mediscreen.webapp.service.INoteService;
 import com.mediscreen.webapp.service.IPatientService;
 import org.slf4j.Logger;
@@ -87,11 +86,11 @@ public class NotesController {
     }
 
 
-    @GetMapping("/{patientId}/{id}")
+    @GetMapping("/{patientId}/details/{id}")
     public String getNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
         try {
-            addPatientToModel(patientId, model);
             NoteRead note = noteService.getNote(id);
+            addPatientToModel(note.getPatientId(), model);
             model.addAttribute("note", note);
             return "note";
         } catch (NoteNotFoundException e) {
@@ -106,12 +105,11 @@ public class NotesController {
     @GetMapping("/{patientId}/update/{id}")
     public String updateNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
         try {
-            addPatientToModel(patientId, model);
-            NoteUpdate noteUpdate = noteService.getNoteUpdate(id);
-            model.addAttribute("noteUpdate", noteUpdate);
-            String cancelUrl = "/notes/" + patientId;
+            NoteRead note = noteService.getNote(id);
+            addPatientToModel(note.getPatientId(), model);
+            model.addAttribute("noteRead", note);
+            String cancelUrl = "/notes/" + note.getPatientId() + "/details/" + id;
             model.addAttribute("cancelUrl", cancelUrl);
-
             return "updateNote";
         } catch (NoteNotFoundException e) {
             logger.info("Cannot update note : " + e.getMessage());
@@ -123,13 +121,14 @@ public class NotesController {
     }
 
     @PostMapping("/{patientId}/update/{id}")
-    public String updateNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, @Valid NoteUpdate noteUpdate, BindingResult result, Model model) {
+    public String updateNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, @Valid NoteRead noteRead, BindingResult result, Model model) {
         if (result.hasErrors()) {
+
             logger.info("Cannot update note : invalid form");
-            addPatientToModel(patientId, model);
+            addPatientToModel(noteRead.getPatientId(), model);
             return "updateNote";
         }
-        noteService.updateNote(noteUpdate);
+        noteService.updateNote(noteRead);
         logger.info("Note with id: " + id + " updated");
         return "redirect:/notes/" + patientId;
     }
@@ -137,8 +136,8 @@ public class NotesController {
     @GetMapping("/{patientId}/delete/{id}")
     public String deleteNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
         try {
-            addPatientToModel(patientId, model);
             NoteRead note = noteService.getNote(id);
+            addPatientToModel(note.getPatientId(), model);
             model.addAttribute("note", note);
             return "deleteNote";
         } catch (NoteNotFoundException e) {

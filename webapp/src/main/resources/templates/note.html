@@ -27,7 +27,7 @@
                                class="btn btn-primary btn-sm">
                                 Update
                             </a>
-                            <a th:href="@{/notes/{patientId}/delete/{id}(patientId=${patient.id}, id=${note.id})}"
+                            <a th:href="@{/notes/{patientId}/delete/{id}(patientId=${note.patientId}, id=${note.id})}"
                                class="btn btn-danger btn-sm">
                                 Delete
                             </a>

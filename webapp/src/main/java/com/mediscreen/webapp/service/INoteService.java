@@ -12,9 +12,9 @@ public interface INoteService {
 
     NoteRead getNote(String id);
 
-    void updateNote(NoteUpdate note);
+    void updateNote(NoteRead note);
 
     void deleteNote(String id);
 
-    NoteUpdate getNoteUpdate(String id);
+    NoteUpdate getNoteUpdate(NoteRead note);
 }

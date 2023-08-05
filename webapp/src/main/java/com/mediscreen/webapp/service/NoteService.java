@@ -30,8 +30,8 @@ public class NoteService implements INoteService {
     }
 
     @Override
-    public void updateNote(NoteUpdate note) {
-        client.save(note);
+    public void updateNote(NoteRead note) {
+        client.save(getNoteUpdate(note));
     }
 
     @Override
@@ -40,8 +40,7 @@ public class NoteService implements INoteService {
     }
 
     @Override
-    public NoteUpdate getNoteUpdate(String id) {
-        NoteRead note = getNote(id);
+    public NoteUpdate getNoteUpdate(NoteRead note) {
         NoteUpdate noteUpdate = new NoteUpdate();
         noteUpdate.setContent(note.getContent());
         noteUpdate.setId(note.getId());

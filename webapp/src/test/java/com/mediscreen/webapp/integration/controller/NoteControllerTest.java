@@ -5,7 +5,6 @@ import com.mediscreen.webapp.exception.PatientNotFoundException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.model.note.NoteCreate;
 import com.mediscreen.webapp.model.note.NoteRead;
-import com.mediscreen.webapp.model.note.NoteUpdate;
 import com.mediscreen.webapp.service.INoteService;
 import com.mediscreen.webapp.service.IPatientService;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ public class NoteControllerTest {
                 .andExpect(status().isOk());
 
         // Assert
-        verify(service, Mockito.times(1)).getAllNotesPaginated(1l,1, 3);
+        verify(service, Mockito.times(1)).getAllNotesPaginated(1l, 1, 3);
         verify(patientService, Mockito.times(1)).getPatient(1l);
     }
 
@@ -74,7 +73,7 @@ public class NoteControllerTest {
                 .andExpect(view().name("redirect:/patient/list"));
 
         // Assert
-        verify(service, Mockito.times(0)).getAllNotesPaginated(anyLong(),anyInt(), anyInt());
+        verify(service, Mockito.times(0)).getAllNotesPaginated(anyLong(), anyInt(), anyInt());
         verify(patientService, Mockito.times(1)).getPatient(1l);
     }
 
@@ -148,10 +147,11 @@ public class NoteControllerTest {
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
         NoteRead note = new NoteRead();
+        note.setPatientId(2l);
         when(service.getNote(anyString())).thenReturn(note);
 
         // Act
-        mockMvc.perform(get("/notes/2/1"))
+        mockMvc.perform(get("/notes/3/details/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("note"));
@@ -162,15 +162,31 @@ public class NoteControllerTest {
     }
 
     @Test
+    public void note_NotFound() throws Exception {
+        // Arrange
+        when(service.getNote(anyString())).thenThrow(NoteNotFoundException.class);
+
+        // Act
+        mockMvc.perform(get("/notes/3/details/1"))
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/notes/3"));
+        // Assert
+        verify(service, Mockito.times(1)).getNote("1");
+
+    }
+
+    @Test
     public void updateNoteForm() throws Exception {
         // Arrange
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
-        NoteUpdate note = new NoteUpdate();
-        when(service.getNoteUpdate(anyString())).thenReturn(note);
+        NoteRead note = new NoteRead();
+        note.setPatientId(2l);
+        when(service.getNote(anyString())).thenReturn(note);
 
         // Act
-        mockMvc.perform(get("/notes/2/update/1"))
+        mockMvc.perform(get("/notes/3/update/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("updateNote"))
@@ -178,7 +194,7 @@ public class NoteControllerTest {
 
         // Assert
         verify(patientService, Mockito.times(1)).getPatient(2l);
-        verify(service, Mockito.times(1)).getNoteUpdate("1");
+        verify(service, Mockito.times(1)).getNote("1");
     }
 
     @Test
@@ -186,7 +202,7 @@ public class NoteControllerTest {
         // Arrange
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
-        when(service.getNoteUpdate(anyString())).thenThrow(NoteNotFoundException.class);
+        when(service.getNote(anyString())).thenThrow(NoteNotFoundException.class);
 
 
         // Act
@@ -196,8 +212,8 @@ public class NoteControllerTest {
                 .andExpect(view().name("redirect:/notes/2"));
 
         // Assert
-        verify(patientService, Mockito.times(1)).getPatient(2l);
-        verify(service, Mockito.times(1)).getNoteUpdate("1");
+        verify(service, Mockito.times(1)).getNote("1");
+        verify(patientService, Mockito.times(0)).getPatient(2l);
     }
 
     @Test
@@ -209,11 +225,11 @@ public class NoteControllerTest {
                 .andDo(print())
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/notes/2"));
-        verify(service, Mockito.times(1)).updateNote(any(NoteUpdate.class));
+        verify(service, Mockito.times(1)).updateNote(any(NoteRead.class));
     }
 
     @Test
-    public void updateNotePostFormErrorTest() throws Exception {
+    public void updateNotePostFormErrorNoContentTest() throws Exception {
         // Arrange
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
@@ -221,16 +237,14 @@ public class NoteControllerTest {
         // Act
         mockMvc.perform(post("/notes/2/update/1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .content("content=note&id=")
+                        .content("content=&id=123&patientId=2")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("updateNote"));
 
         // Arrange
-        verify(service, Mockito.never()).updateNote(any(NoteUpdate.class));
-        verify(patientService, Mockito.times(1)).getPatient(2l);
-
+        verify(service, Mockito.never()).updateNote(any(NoteRead.class));
     }
 
 
@@ -240,10 +254,11 @@ public class NoteControllerTest {
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
         NoteRead note = new NoteRead();
+        note.setPatientId(2l);
         when(service.getNote(anyString())).thenReturn(note);
 
         // Act
-        mockMvc.perform(get("/notes/2/delete/1"))
+        mockMvc.perform(get("/notes/3/delete/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("deleteNote"))
@@ -251,6 +266,7 @@ public class NoteControllerTest {
 
         // Assert
         verify(service, Mockito.times(1)).getNote("1");
+        verify(patientService, Mockito.times(1)).getPatient(2l);
     }
 
     @Test

@@ -1,10 +1,17 @@
 package com.mediscreen.webapp.model.note;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
 public class NoteRead {
+    @NotBlank
     private String id;
+
+    @Positive
     private Long patientId;
+
+    @NotBlank(message = "The note cannot be blank.")
     private String content;
     private Date creationDate;
     private Date modificationDate;

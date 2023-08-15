@@ -60,7 +60,7 @@
                     <ul class="pagination m-2 justify-content-center">
                         <li class="page-item" th:if="${notePage.number > 0}">
                             <a class="page-link"
-                               th:href="@{/notes/{patientId}/list(patientId=${patient.id}, page=${notePage.number})}">
+                               th:href="@{/notes/{patientId}(patientId=${patient.id}, page=${notePage.number})}">
                                 &#171;
                             </a>
                         </li>

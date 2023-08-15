@@ -21,7 +21,7 @@ public class NoteService implements INoteService {
 
     @Override
     public Page<NoteRead> getAllNotesPaginated(long patientId, int pageNumber, int itemPerPage) {
-        return client.findAll(patientId, pageNumber, itemPerPage);
+        return  client.findAll(patientId, pageNumber, itemPerPage);
     }
 
     @Override

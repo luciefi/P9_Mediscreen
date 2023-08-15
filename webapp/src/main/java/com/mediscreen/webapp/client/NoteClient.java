@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "notes-service", url = "http://localhost:8082/notes", configuration = CustomFeignConfiguration.class, fallback = NoteClientFallback.class)
+@FeignClient(name = "notes-service", url = "${note-client-url}", configuration = CustomFeignConfiguration.class, fallback = NoteClientFallback.class)
 public interface NoteClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)

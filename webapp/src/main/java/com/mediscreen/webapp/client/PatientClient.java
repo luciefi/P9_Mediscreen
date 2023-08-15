@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "details-service", url = "http://localhost:8081/patientDetails", configuration = CustomFeignConfiguration.class, fallback = PatientClientFallback.class)
+@FeignClient(name = "details-service", url = "${patient-client-url}", configuration = CustomFeignConfiguration.class, fallback = PatientClientFallback.class)
 public interface PatientClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)

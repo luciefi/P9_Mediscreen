@@ -1,42 +1,57 @@
 version: '2'
 services:
+  mysql-server:
+    restart: always
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD:test_pass # TODO: Change this
+      - MYSQL_USER:springuser
+      - MYSQL_PASS:ThePassword
+    volumes:
+      - mysql-data:/var/lib/mysql
+  mongodb-server:
+    restart: always
+    image: mongo:latest
+    volumes:
+      - mongodb-data:/data/db
   webapp:
-    container_name: webapp
     build:
       context: webapp
-      dockerfile: Dockerfile
-    image: webapp:latest
+      dockerfile: "./Dockerfile"
+#    image: webapp:latest
     ports:
       - 18888:8080
-    volumes:
-      - webapp-db:/home/node/app
-    networks:
-      - spring-cloud-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      - spring-cloud-network
   patient-service:
-    container_name: patient-service
     build:
       context: patient-service
-      dockerfile: Dockerfile
-    image: patient-service:latest
+      dockerfile: "./Dockerfile"
+#    image: patient-service:latest
     ports:
-      - 19999:8081
-    volumes:
-      - patient-service-db:/home/node/app
-    networks:
-      - spring-cloud-network
+      - 17777:8081
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+  #    networks:
+#      - spring-cloud-network
   notes-service:
-    container_name: notes-service
     build:
       context: notes-service
-      dockerfile: Dockerfile
-    image: notes-service:latest
+      dockerfile: "./Dockerfile"
+#    image: notes-service:latest
     ports:
       - 19999:8082
-    volumes:
-      - notes-service-db:/home/node/app
-    networks:
-      - spring-cloud-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+ #   networks:
+ #     - spring-cloud-network
+
 volumes:
-networks:
-  spring-cloud-network:
-    driver: bridge
+  mysql-data:
+  mongodb-data:
+
+#networks:
+#  spring-cloud-network:
+#   driver: bridge

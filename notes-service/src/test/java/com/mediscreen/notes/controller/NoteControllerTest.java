@@ -50,6 +50,21 @@ class NoteControllerTest {
     }
 
     @Test
+    void getNoteList() throws Exception {
+        // Arrange
+        NoteEntity note = new NoteEntity();
+        when(service.getAllNotesList(anyLong())).thenReturn(Collections.singletonList(note));
+
+        // Act
+        mockMvc.perform(get("/notes/list/1"))
+                .andExpect(status().isOk());
+
+        // Assert
+        verify(service, Mockito.times(1)).getAllNotesList(1l);
+
+    }
+
+    @Test
     void getPaginatedNotes() throws Exception {
         // Arrange
         NoteEntity note = new NoteEntity();

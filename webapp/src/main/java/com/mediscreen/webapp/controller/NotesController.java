@@ -1,7 +1,7 @@
 package com.mediscreen.webapp.controller;
 
-import com.mediscreen.webapp.exception.NoteNotFoundException;
-import com.mediscreen.webapp.exception.PatientNotFoundException;
+import com.mediscreen.webapp.exception.NoteClientException;
+import com.mediscreen.webapp.exception.PatientClientException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.model.note.NoteCreate;
 import com.mediscreen.webapp.model.note.NoteRead;
@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,27 +40,28 @@ public class NotesController {
 
     @GetMapping("/{patientId}/add")
     public String createNote(@PathVariable("patientId") long patientId, Model model) {
-        try {
-            NoteCreate noteCreate = new NoteCreate();
-            model.addAttribute("noteCreate", noteCreate);
-            addPatientToModel(patientId, model);
-            return "addNote";
-        } catch (PatientNotFoundException e) {
-            logger.info("Cannot delete note : " + e.getMessage());
-            return "redirect:/patient/list";
-        }
+        NoteCreate noteCreate = new NoteCreate();
+        model.addAttribute("noteCreate", noteCreate);
+        addPatientToModel(patientId, model);
+        return "addNote";
+
     }
 
     @PostMapping("/{patientId}/add")
     public String saveNewNote(@PathVariable("patientId") long patientId, @Valid NoteCreate noteCreate, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            logger.info("Cannot add note : invalid form");
-            addPatientToModel(patientId, model);
-            return "addNote";
+        try {
+            if (result.hasErrors()) {
+                logger.info("Cannot add note : invalid form");
+                addPatientToModel(patientId, model);
+                return "addNote";
+            }
+            noteService.saveNewNote(noteCreate);
+            logger.info("New note added");
+            return "redirect:/notes/" + patientId;
+        } catch (NoteClientException e) {
+            logger.info("Cannot create note : " + e.getMessage());
+            return "redirect:/notes/" + patientId; // TODO ajout param redirection vers note list
         }
-        noteService.saveNewNote(noteCreate);
-        logger.info("New note added");
-        return "redirect:/notes/" + patientId;
     }
 
     @GetMapping("/{patientId}")
@@ -79,12 +82,11 @@ public class NotesController {
             }
 
             return "noteList";
-        } catch (PatientNotFoundException e) {
-            logger.info("Cannot delete note : " + e.getMessage());
-            return "redirect:/patient/list";
+        } catch (NoteClientException e) {
+            logger.info("Cannot get note list : " + e.getMessage());
+            return "redirect:/notes/" + patientId; // TODO ajout param redirection vers note list
         }
     }
-
 
     @GetMapping("/{patientId}/details/{id}")
     public String getNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
@@ -93,12 +95,9 @@ public class NotesController {
             addPatientToModel(note.getPatientId(), model);
             model.addAttribute("note", note);
             return "note";
-        } catch (NoteNotFoundException e) {
-            logger.info("Cannot get note details : " + e.getMessage());
-            return "redirect:/notes/" + patientId;
-        } catch (PatientNotFoundException e) {
-            logger.info("Cannot delete note : " + e.getMessage());
-            return "redirect:/patient/list";
+        } catch (NoteClientException e) {
+            logger.info("Cannot get note : " + e.getMessage());
+            return "redirect:/notes/" + patientId; // TODO ajout param
         }
     }
 
@@ -111,26 +110,28 @@ public class NotesController {
             String cancelUrl = "/notes/" + note.getPatientId() + "/details/" + id;
             model.addAttribute("cancelUrl", cancelUrl);
             return "updateNote";
-        } catch (NoteNotFoundException e) {
+        } catch (NoteClientException e) {
             logger.info("Cannot update note : " + e.getMessage());
-            return "redirect:/notes/" + patientId;
-        } catch (PatientNotFoundException e) {
-            logger.info("Cannot delete note : " + e.getMessage());
-            return "redirect:/patient/list";
+            return "redirect:/notes/" + patientId; // TODO ajout param
         }
     }
 
     @PostMapping("/{patientId}/update/{id}")
     public String updateNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, @Valid NoteRead noteRead, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        try {
+            if (result.hasErrors()) {
 
-            logger.info("Cannot update note : invalid form");
-            addPatientToModel(noteRead.getPatientId(), model);
-            return "updateNote";
+                logger.info("Cannot update note : invalid form");
+                addPatientToModel(noteRead.getPatientId(), model);
+                return "updateNote";
+            }
+            noteService.updateNote(noteRead);
+            logger.info("Note with id: " + id + " updated");
+            return "redirect:/notes/" + patientId;
+        } catch (NoteClientException e) {
+            logger.info("Cannot update note : " + e.getMessage());
+            return "redirect:/notes/" + patientId; // TODO ajout param
         }
-        noteService.updateNote(noteRead);
-        logger.info("Note with id: " + id + " updated");
-        return "redirect:/notes/" + patientId;
     }
 
     @GetMapping("/{patientId}/delete/{id}")
@@ -140,25 +141,34 @@ public class NotesController {
             addPatientToModel(note.getPatientId(), model);
             model.addAttribute("note", note);
             return "deleteNote";
-        } catch (NoteNotFoundException e) {
+        } catch (NoteClientException e) {
             logger.info("Cannot delete note : " + e.getMessage());
             return "redirect:/notes/" + patientId;
-        } catch (PatientNotFoundException e) {
-            logger.info("Cannot delete note : " + e.getMessage());
-            return "redirect:/patient/list";
         }
     }
 
     @PostMapping("/{patientId}/delete/{id}")
     public String deleteNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id) {
-        noteService.deleteNote(id);
-        logger.info("Note with id: " + id + " deleted");
-        return "redirect:/notes/" + patientId;
+        try {
+            noteService.deleteNote(id);
+            logger.info("Note with id: " + id + " deleted");
+            return "redirect:/notes/" + patientId;
+        } catch (NoteClientException e) {
+            logger.info("Cannot delete note : " + e.getMessage());
+            return "redirect:/notes/" + patientId;
+        }
     }
 
     private void addPatientToModel(long patientId, Model model) {
         Patient patient = patientService.getPatient(patientId);
         model.addAttribute("patient", patient);
+    }
+
+
+    @ExceptionHandler({PatientClientException.class})
+    public String handlePatientClientException(Exception e) {
+        logger.error("Patient client exception: {}", e.getMessage());
+        return "redirect:/patient/list"; // TODO add redirect param
     }
 
 }

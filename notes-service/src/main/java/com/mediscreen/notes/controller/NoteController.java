@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/notes")
@@ -41,6 +43,12 @@ public class NoteController {
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) @Min(value = 0, message = "Page index must not be less than zero") Integer pageNumber,
             @RequestParam(value = "itemPerPage", defaultValue = "10", required = false) @Min(value = 1, message = "Page size must not be less than one") Integer itemPerPage) {
         return service.getAllNotesPaginated(patientId, pageNumber, itemPerPage).map(NoteMapper::convertToNoteRead);
+    }
+
+    @GetMapping("/list/{id}")
+    public List<NoteRead> getNotesList(
+            @PathVariable("id") @Valid @Min(value = 1, message = "Patient Id must be valid") long patientId) {
+        return service.getAllNotesList(patientId).stream().map(NoteMapper::convertToNoteRead).collect(Collectors.toList());
     }
 
     @PostMapping
@@ -73,7 +81,7 @@ public class NoteController {
         return new ResponseEntity<>("Not found exception: " + e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ ConstraintViolationException.class})
+    @ExceptionHandler({ ConstraintViolationException.class, MethodArgumentNotValidException.class})
     public ResponseEntity<?> handleConstraintException(Exception e) {
         logger.error("Invalid parameter: {}", e.getMessage());
         return new ResponseEntity<>("Invalid parameter: {}" + e.getMessage(), HttpStatus.BAD_REQUEST);

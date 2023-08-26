@@ -18,35 +18,46 @@ services:
     build:
       context: webapp
       dockerfile: "./Dockerfile"
-#    image: webapp:latest
+    #    image: webapp:latest
     ports:
       - 18888:8080
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-#    networks:
-#      - spring-cloud-network
+  #    networks:
+  #      - spring-cloud-network
   patient-service:
     build:
       context: patient-service
       dockerfile: "./Dockerfile"
-#    image: patient-service:latest
+    #    image: patient-service:latest
     ports:
       - 17777:8081
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   #    networks:
-#      - spring-cloud-network
+  #      - spring-cloud-network
   notes-service:
     build:
       context: notes-service
       dockerfile: "./Dockerfile"
-#    image: notes-service:latest
+    #    image: notes-service:latest
     ports:
       - 19999:8082
     environment:
       - SPRING_PROFILES_ACTIVE=docker
- #   networks:
- #     - spring-cloud-network
+  #   networks:
+  #     - spring-cloud-network
+  risk-service:
+    build:
+      context: risk-service
+      dockerfile: "./Dockerfile"
+    #    image: notes-service:latest
+    ports:
+      - 19999:8083
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    #   networks:
+    #     - spring-cloud-network
 
 volumes:
   mysql-data:

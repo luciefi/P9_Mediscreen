@@ -1,6 +1,6 @@
 package com.mediscreen.webapp.integration.controller;
 
-import com.mediscreen.webapp.exception.PatientNotFoundException;
+import com.mediscreen.webapp.exception.PatientClientException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.service.IPatientService;
 import org.junit.jupiter.api.Test;
@@ -107,7 +107,7 @@ public class PatientControllerTest {
 
     @Test
     public void updatePatientFormNotFound() throws Exception {
-        when(service.getPatient(anyLong())).thenThrow(PatientNotFoundException.class);
+        when(service.getPatient(anyLong())).thenThrow(PatientClientException.class);
         mockMvc.perform(get("/patient/update/1"))
                 .andDo(print())
                 .andExpect(status().isFound())
@@ -154,7 +154,7 @@ public class PatientControllerTest {
 
     @Test
     public void deletePatientFormNotFound() throws Exception {
-        when(service.getPatient(anyLong())).thenThrow(PatientNotFoundException.class);
+        when(service.getPatient(anyLong())).thenThrow(PatientClientException.class);
         mockMvc.perform(get("/patient/delete/1"))
                 .andDo(print())
                 .andExpect(status().isFound())

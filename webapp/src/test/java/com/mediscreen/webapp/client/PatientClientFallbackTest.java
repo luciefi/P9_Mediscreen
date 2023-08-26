@@ -1,9 +1,8 @@
 package com.mediscreen.webapp.client;
 
-import com.mediscreen.webapp.exception.PatientNotFoundException;
+import com.mediscreen.webapp.exception.PatientClientException;
 import com.mediscreen.webapp.model.Patient;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +17,7 @@ class PatientClientFallbackTest {
 
     @Test
     void findById() {
-        assertThrows(PatientNotFoundException.class, () -> patientClientFallback.findById(1l));
+        assertThrows(PatientClientException.class, () -> patientClientFallback.findById(1l));
     }
 
     @Test
@@ -30,11 +29,11 @@ class PatientClientFallbackTest {
     void save() {
         Patient patient = new Patient();
         patient.setId(1l);
-        assertThrows(PatientNotFoundException.class, () -> patientClientFallback.save(patient));
+        assertThrows(PatientClientException.class, () -> patientClientFallback.save(patient));
     }
 
     @Test
     void deleteById() {
-        assertThrows(PatientNotFoundException.class, () -> patientClientFallback.deleteById(1l));
+        assertThrows(PatientClientException.class, () -> patientClientFallback.deleteById(1l));
     }
 }

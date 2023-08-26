@@ -18,13 +18,13 @@
                 <h2 class="card-title text-center my-3" th:text="|${patient.familyName} ${patient.givenName}|"></h2>
                 <ul class="nav nav-tabs justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Details</a>
+                        <a class="nav-link active" aria-current="page" th:href="@{/notes/{id}(id=${patient.id})}">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"  th:href="@{/notes/{id}(id=${patient.id})}">Notes</a>
+                        <a class="nav-link" th:href="@{/notes/{id}(id=${patient.id})}">Notes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Diabetes risk</a>
+                        <a class="nav-link" th:href="@{/risk/{id}(id=${patient.id})}">Diabetes risk</a>
                     </li>
                 </ul>
 

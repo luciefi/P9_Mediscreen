@@ -1,7 +1,7 @@
 package com.mediscreen.webapp.integration.controller;
 
-import com.mediscreen.webapp.exception.NoteNotFoundException;
-import com.mediscreen.webapp.exception.PatientNotFoundException;
+import com.mediscreen.webapp.exception.NoteClientException;
+import com.mediscreen.webapp.exception.PatientClientException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.model.note.NoteCreate;
 import com.mediscreen.webapp.model.note.NoteRead;
@@ -64,7 +64,7 @@ public class NoteControllerTest {
         // Arrange
         NoteRead note = new NoteRead();
         when(service.getAllNotesPaginated(anyLong(), anyInt(), anyInt())).thenReturn(new PageImpl<>(Collections.singletonList(note)));
-        when(patientService.getPatient(anyLong())).thenThrow(PatientNotFoundException.class);
+        when(patientService.getPatient(anyLong())).thenThrow(PatientClientException.class);
 
         // Act
         mockMvc.perform(get("/notes/1")
@@ -97,7 +97,7 @@ public class NoteControllerTest {
     @Test
     public void addNoteTest_PatientNotFound() throws Exception {
         // Arrange
-        when(patientService.getPatient(anyLong())).thenThrow(PatientNotFoundException.class);
+        when(patientService.getPatient(anyLong())).thenThrow(PatientClientException.class);
 
         // Act
         mockMvc.perform(get("/notes/1/add"))
@@ -164,7 +164,7 @@ public class NoteControllerTest {
     @Test
     public void note_NotFound() throws Exception {
         // Arrange
-        when(service.getNote(anyString())).thenThrow(NoteNotFoundException.class);
+        when(service.getNote(anyString())).thenThrow(NoteClientException.class);
 
         // Act
         mockMvc.perform(get("/notes/3/details/1"))
@@ -202,7 +202,7 @@ public class NoteControllerTest {
         // Arrange
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
-        when(service.getNote(anyString())).thenThrow(NoteNotFoundException.class);
+        when(service.getNote(anyString())).thenThrow(NoteClientException.class);
 
 
         // Act
@@ -274,7 +274,7 @@ public class NoteControllerTest {
         // Arrange
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
-        when(service.getNote(anyString())).thenThrow(NoteNotFoundException.class);
+        when(service.getNote(anyString())).thenThrow(NoteClientException.class);
 
         // Act
         mockMvc.perform(get("/notes/2/delete/1"))

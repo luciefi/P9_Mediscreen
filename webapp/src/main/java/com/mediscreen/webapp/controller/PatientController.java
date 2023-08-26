@@ -1,6 +1,6 @@
 package com.mediscreen.webapp.controller;
 
-import com.mediscreen.webapp.exception.PatientNotFoundException;
+import com.mediscreen.webapp.exception.PatientClientException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.service.IPatientService;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class PatientController {
             Patient patient = service.getPatient(id);
             model.addAttribute("patient", patient);
             return "patientDetails";
-        } catch (PatientNotFoundException e) {
+        } catch (PatientClientException e) {
             logger.info("Cannot get patient details : " + e.getMessage());
             return "redirect:/patient/list";
         }
@@ -87,7 +87,7 @@ public class PatientController {
             model.addAttribute("cancelUrl", cancelUrl);
 
             return "updatePatient";
-        } catch (PatientNotFoundException e) {
+        } catch (PatientClientException e) {
             logger.info("Cannot update patient : " + e.getMessage());
             return "redirect:/patient/list";
         }
@@ -110,7 +110,7 @@ public class PatientController {
             Patient patient = service.getPatient(id);
             model.addAttribute("patient", patient);
             return "deletePatient";
-        } catch (PatientNotFoundException e) {
+        } catch (PatientClientException e) {
             logger.info("Cannot delete patient : " + e.getMessage());
             return "redirect:/patient/list";
         }
@@ -123,4 +123,9 @@ public class PatientController {
         return "redirect:/patient/list";
     }
 
+    @ExceptionHandler({PatientClientException.class})
+    public String handlePatientClientException(Exception e) {
+        logger.error("Patient client exception: {}", e.getMessage());
+        return "redirect:/patient/list"; // TODO add redirect param
+    }
 }

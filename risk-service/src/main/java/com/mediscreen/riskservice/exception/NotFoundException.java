@@ -1,4 +1,4 @@
-package com.mediscreen.webapp.exception;
+package com.mediscreen.riskservice.exception;
 
 public class NotFoundException extends IllegalArgumentException {
     public NotFoundException(String s) {

@@ -1,4 +1,4 @@
-package com.mediscreen.webapp.exception;
+package com.mediscreen.riskservice.exception;
 
 
 public class PatientNotFoundException  extends NotFoundException {

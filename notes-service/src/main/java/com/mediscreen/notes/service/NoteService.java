@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class NoteService implements INoteService {
@@ -27,6 +28,11 @@ public class NoteService implements INoteService {
     @Override
     public Page<NoteEntity> getAllNotesPaginated(long patientId, int pageNumber, int itemPerPage) {
         return  repository.findByPatientIdOrderByCreationDateDesc(patientId, PageRequest.of(pageNumber, itemPerPage));
+    }
+
+    @Override
+    public List<NoteEntity> getAllNotesList(long patientId) {
+        return repository.findByPatientIdOrderByCreationDateDesc(patientId);
     }
 
     @Override

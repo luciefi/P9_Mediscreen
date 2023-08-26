@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,6 +51,15 @@ class NoteServiceTest {
 
         // Assert
         verify(repository, times(1)).findByPatientIdOrderByCreationDateDesc(anyLong(), any(PageRequest.class));
+    }
+
+    @Test
+    void getAllNoteList() {
+        // Act
+        List<NoteEntity> notes = service.getAllNotesList(1L);
+
+        // Assert
+        verify(repository, times(1)).findByPatientIdOrderByCreationDateDesc(anyLong());
     }
 
     @Test

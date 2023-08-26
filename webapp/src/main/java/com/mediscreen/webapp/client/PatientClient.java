@@ -1,6 +1,5 @@
 package com.mediscreen.webapp.client;
 
-import com.mediscreen.webapp.configuration.CustomFeignConfiguration;
 import com.mediscreen.webapp.model.Patient;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "details-service", url = "${patient-client-url}", configuration = CustomFeignConfiguration.class, fallback = PatientClientFallback.class)
+@FeignClient(name = "details-service", url = "${patient-client-url}", fallback = PatientClientFallback.class)
 public interface PatientClient {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")
     Page<Patient> findAll(
             @RequestParam(value = "pageNumber") int pageNumber,
             @RequestParam(value = "itemPerPage", required = false) int itemPerPage);
@@ -26,7 +25,7 @@ public interface PatientClient {
     @Headers("Content-Type: application/json")
     void createPatient(Patient patient);
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT, consumes = "application/json")
     @Headers("Content-Type: application/json")
     void save(Patient patient);
 

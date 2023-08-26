@@ -1,6 +1,6 @@
 package com.mediscreen.webapp.controller;
 
-import com.mediscreen.webapp.exception.UserNotFoundException;
+import com.mediscreen.webapp.exception.UserClientException;
 import com.mediscreen.webapp.model.User;
 import com.mediscreen.webapp.service.IUserService;
 import org.slf4j.Logger;
@@ -73,7 +73,7 @@ public class UserController {
             User user = service.getUser(login);
             model.addAttribute("user", user);
             return "userDetails";
-        } catch (UserNotFoundException e) {
+        } catch (UserClientException e) {
             logger.info("Cannot get user details : " + e.getMessage());
             return "redirect:/user/list";
         }
@@ -88,7 +88,7 @@ public class UserController {
             model.addAttribute("cancelUrl", cancelUrl);
 
             return "updateUser";
-        } catch (UserNotFoundException e) {
+        } catch (UserClientException e) {
             logger.info("Cannot update user : " + e.getMessage());
             return "redirect:/user/list";
         }
@@ -111,7 +111,7 @@ public class UserController {
             User user = service.getUser(login);
             model.addAttribute("user", user);
             return "deleteUser";
-        } catch (UserNotFoundException e) {
+        } catch (UserClientException e) {
             logger.info("Cannot delete user : " + e.getMessage());
             return "redirect:/user/list";
         }

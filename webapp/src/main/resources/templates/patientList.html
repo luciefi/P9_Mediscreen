@@ -23,6 +23,9 @@
                 </div>
             </div>
         </div>
+        <div th:unless="${#strings.isEmpty(errorMessage)}" class="alert alert-danger mt-3 mb-0">
+            <small th:text=${errorMessage}></small>
+        </div>
         <div class="mt-4 border text-center">
             <table class="table table-hover table-sm">
                 <thead class="bg-primary text-white">

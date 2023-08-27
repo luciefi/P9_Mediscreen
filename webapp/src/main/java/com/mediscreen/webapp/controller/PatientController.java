@@ -1,6 +1,5 @@
 package com.mediscreen.webapp.controller;
 
-import com.mediscreen.webapp.exception.PatientClientException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.service.IPatientService;
 import org.slf4j.Logger;
@@ -56,41 +55,35 @@ public class PatientController {
 
         int totalPages = patientPage.getTotalPages();
         if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
         return "patientList";
     }
 
+    @GetMapping("/list/unavailable")
+    public String getPatientListUnavailable() {
+        return "patientListUnavailable";
+    }
+
 
     @GetMapping("/details/{id}")
     public String getDetailsPatientForm(@PathVariable("id") long id, Model model) {
-        try {
-            Patient patient = service.getPatient(id);
-            model.addAttribute("patient", patient);
-            return "patientDetails";
-        } catch (PatientClientException e) {
-            logger.info("Cannot get patient details : " + e.getMessage());
-            return "redirect:/patient/list";
-        }
+        Patient patient = service.getPatient(id);
+        model.addAttribute("patient", patient);
+        return "patientDetails";
     }
 
     @GetMapping("/update/{id}")
     public String updatePatientForm(@PathVariable("id") long id, @RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer, Model model) {
-        try {
-            Patient patient = service.getPatient(id);
-            model.addAttribute("patient", patient);
-            String cancelUrl = referrer != null && referrer.contains("/patient/details/") ? "/patient/details/" + id : "/patient/list";
-            model.addAttribute("cancelUrl", cancelUrl);
+        Patient patient = service.getPatient(id);
+        model.addAttribute("patient", patient);
+        String cancelUrl = referrer != null && referrer.contains("/patient/details/") ? "/patient/details/" + id : "/patient/list";
+        model.addAttribute("cancelUrl", cancelUrl);
 
-            return "updatePatient";
-        } catch (PatientClientException e) {
-            logger.info("Cannot update patient : " + e.getMessage());
-            return "redirect:/patient/list";
-        }
+        return "updatePatient";
+
     }
 
     @PostMapping("/update/{id}")
@@ -106,14 +99,9 @@ public class PatientController {
 
     @GetMapping("/delete/{id}")
     public String deletePatientForm(@PathVariable("id") long id, Model model) {
-        try {
-            Patient patient = service.getPatient(id);
-            model.addAttribute("patient", patient);
-            return "deletePatient";
-        } catch (PatientClientException e) {
-            logger.info("Cannot delete patient : " + e.getMessage());
-            return "redirect:/patient/list";
-        }
+        Patient patient = service.getPatient(id);
+        model.addAttribute("patient", patient);
+        return "deletePatient";
     }
 
     @PostMapping("/delete/{id}")
@@ -123,9 +111,4 @@ public class PatientController {
         return "redirect:/patient/list";
     }
 
-    @ExceptionHandler({PatientClientException.class})
-    public String handlePatientClientException(Exception e) {
-        logger.error("Patient client exception: {}", e.getMessage());
-        return "redirect:/patient/list"; // TODO add redirect param
-    }
 }

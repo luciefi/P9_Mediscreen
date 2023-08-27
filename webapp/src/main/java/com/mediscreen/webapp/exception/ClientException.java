@@ -1,6 +1,6 @@
 package com.mediscreen.webapp.exception;
 
-public class ClientException extends IllegalArgumentException {
+public class ClientException extends RuntimeException {
     public ClientException(String s) {
         super(s);
     }

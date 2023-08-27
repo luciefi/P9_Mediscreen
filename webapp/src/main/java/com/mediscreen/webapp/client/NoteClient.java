@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "notes-service", url = "${note-client-url}", fallback = NoteClientFallback.class)
+@FeignClient(name = "notes-service", url = "${note-client-url}", fallbackFactory = NoteClientFallbackFactory.class)
 public interface NoteClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = "application/json")

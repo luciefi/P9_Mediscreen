@@ -1,7 +1,7 @@
 package com.mediscreen.webapp.controller;
 
 import com.mediscreen.webapp.exception.NoteClientException;
-import com.mediscreen.webapp.exception.PatientClientException;
+import com.mediscreen.webapp.exception.UnavailableNoteClientException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.model.note.NoteCreate;
 import com.mediscreen.webapp.model.note.NoteRead;
@@ -11,12 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -44,11 +43,10 @@ public class NotesController {
         model.addAttribute("noteCreate", noteCreate);
         addPatientToModel(patientId, model);
         return "addNote";
-
     }
 
     @PostMapping("/{patientId}/add")
-    public String saveNewNote(@PathVariable("patientId") long patientId, @Valid NoteCreate noteCreate, BindingResult result, Model model) {
+    public String saveNewNote(@PathVariable("patientId") long patientId, @Valid NoteCreate noteCreate, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         try {
             if (result.hasErrors()) {
                 logger.info("Cannot add note : invalid form");
@@ -59,13 +57,14 @@ public class NotesController {
             logger.info("New note added");
             return "redirect:/notes/" + patientId;
         } catch (NoteClientException e) {
-            logger.info("Cannot create note : " + e.getMessage());
-            return "redirect:/notes/" + patientId; // TODO ajout param redirection vers note list
+            return handleNoteClientException(e, patientId, redirectAttributes);
+        } catch (UnavailableNoteClientException e) {
+            return handleUnavailableNoteClientException(e, patientId);
         }
     }
 
     @GetMapping("/{patientId}")
-    public String getNoteList(@PathVariable("patientId") long patientId, Model model, @RequestParam(name = "page", required = false) Optional<Integer> pageNumber) {
+    public String getNoteList(@PathVariable("patientId") long patientId, Model model, @RequestParam(name = "page", required = false) Optional<Integer> pageNumber, RedirectAttributes redirectAttributes) {
         try {
             int currentPage = Math.max(pageNumber.orElse(1), 1);
             addPatientToModel(patientId, model);
@@ -83,26 +82,34 @@ public class NotesController {
 
             return "noteList";
         } catch (NoteClientException e) {
-            logger.info("Cannot get note list : " + e.getMessage());
-            return "redirect:/notes/" + patientId; // TODO ajout param redirection vers note list
+            return handleNoteClientException(e, patientId, redirectAttributes);
+        } catch (UnavailableNoteClientException e) {
+            return handleUnavailableNoteClientException(e, patientId);
         }
     }
 
+    @GetMapping("/{patientId}/unavailable")
+    public String getNoteListUnavailable(@PathVariable("patientId") long patientId, Model model) {
+        addPatientToModel(patientId, model);
+        return "noteListUnavailable";
+    }
+
     @GetMapping("/{patientId}/details/{id}")
-    public String getNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
+    public String getNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             NoteRead note = noteService.getNote(id);
             addPatientToModel(note.getPatientId(), model);
             model.addAttribute("note", note);
             return "note";
         } catch (NoteClientException e) {
-            logger.info("Cannot get note : " + e.getMessage());
-            return "redirect:/notes/" + patientId; // TODO ajout param
+            return handleNoteClientException(e, patientId, redirectAttributes);
+        } catch (UnavailableNoteClientException e) {
+            return handleUnavailableNoteClientException(e, patientId);
         }
     }
 
     @GetMapping("/{patientId}/update/{id}")
-    public String updateNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
+    public String updateNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             NoteRead note = noteService.getNote(id);
             addPatientToModel(note.getPatientId(), model);
@@ -111,13 +118,14 @@ public class NotesController {
             model.addAttribute("cancelUrl", cancelUrl);
             return "updateNote";
         } catch (NoteClientException e) {
-            logger.info("Cannot update note : " + e.getMessage());
-            return "redirect:/notes/" + patientId; // TODO ajout param
+            return handleNoteClientException(e, patientId, redirectAttributes);
+        } catch (UnavailableNoteClientException e) {
+            return handleUnavailableNoteClientException(e, patientId);
         }
     }
 
     @PostMapping("/{patientId}/update/{id}")
-    public String updateNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, @Valid NoteRead noteRead, BindingResult result, Model model) {
+    public String updateNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, @Valid NoteRead noteRead, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         try {
             if (result.hasErrors()) {
 
@@ -129,33 +137,36 @@ public class NotesController {
             logger.info("Note with id: " + id + " updated");
             return "redirect:/notes/" + patientId;
         } catch (NoteClientException e) {
-            logger.info("Cannot update note : " + e.getMessage());
-            return "redirect:/notes/" + patientId; // TODO ajout param
+            return handleNoteClientException(e, patientId, redirectAttributes);
+        } catch (UnavailableNoteClientException e) {
+            return handleUnavailableNoteClientException(e, patientId);
         }
     }
 
     @GetMapping("/{patientId}/delete/{id}")
-    public String deleteNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model) {
+    public String deleteNoteForm(@PathVariable("patientId") long patientId, @PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             NoteRead note = noteService.getNote(id);
             addPatientToModel(note.getPatientId(), model);
             model.addAttribute("note", note);
             return "deleteNote";
         } catch (NoteClientException e) {
-            logger.info("Cannot delete note : " + e.getMessage());
-            return "redirect:/notes/" + patientId;
+            return handleNoteClientException(e, patientId, redirectAttributes);
+        } catch (UnavailableNoteClientException e) {
+            return handleUnavailableNoteClientException(e, patientId);
         }
     }
 
     @PostMapping("/{patientId}/delete/{id}")
-    public String deleteNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id) {
+    public String deleteNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, RedirectAttributes redirectAttributes) {
         try {
             noteService.deleteNote(id);
             logger.info("Note with id: " + id + " deleted");
             return "redirect:/notes/" + patientId;
         } catch (NoteClientException e) {
-            logger.info("Cannot delete note : " + e.getMessage());
-            return "redirect:/notes/" + patientId;
+            return handleNoteClientException(e, patientId, redirectAttributes);
+        } catch (UnavailableNoteClientException e) {
+            return handleUnavailableNoteClientException(e, patientId);
         }
     }
 
@@ -164,11 +175,14 @@ public class NotesController {
         model.addAttribute("patient", patient);
     }
 
-
-    @ExceptionHandler({PatientClientException.class})
-    public String handlePatientClientException(Exception e) {
-        logger.error("Patient client exception: {}", e.getMessage());
-        return "redirect:/patient/list"; // TODO add redirect param
+    public String handleNoteClientException(Exception e, long patientId, RedirectAttributes redirectAttributes) {
+        logger.error("Note client exception: {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/notes/" + patientId;
     }
 
+    public String handleUnavailableNoteClientException(Exception e, long patientId) {
+        logger.error(e.getMessage());
+        return "redirect:/notes/" + patientId + "/unavailable";
+    }
 }

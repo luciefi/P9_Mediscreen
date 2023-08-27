@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "risk-service", url = "${risk-client-url}", fallback = RiskClientFallback.class)
+@FeignClient(name = "risk-service", url = "${risk-client-url}", fallbackFactory = RiskClientFallbackFactory.class)
 public interface RiskClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "text/plain;charset=UTF-8")

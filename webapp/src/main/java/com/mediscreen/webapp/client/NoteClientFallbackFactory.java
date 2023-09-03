@@ -27,46 +27,46 @@ public class NoteClientFallbackFactory implements FallbackFactory<NoteClient> {
 
             @Override
             public Page<NoteRead> findAll(long patientId, int pageNumber, int itemPerPage) {
-                throwNoteException("Exception while retrieving note list from note service.");
+                throwNoteException("\u26a0 \u2007 Error while retrieving note list.");
                 return null;
             }
 
             @Override
             public NoteRead findById(String id) {
-                throwNoteException("Exception while retrieving note with id: " + id + " from note service.");
+                throwNoteException("\u26a0 \u2007 Error while retrieving note with id: " + id + ".");
                 return null;
             }
 
             @Override
             public void createNote(NoteCreate note) {
-                throwNoteException("Exception while saving new note with content: " + note.getContent() + " in note service.");
+                throwNoteException("\u26a0 \u2007 Error while saving new note with content: " + note.getContent() + ".");
             }
 
             @Override
             public void save(NoteUpdate note) {
-                throwNoteException("Exception while updating note with content: " + note.getContent() + " with id: " + note.getId() + " in note service.");
+                throwNoteException("\u26a0 \u2007 Error while updating note with content: " + note.getContent() + " with id: " + note.getId() + ".");
             }
 
             @Override
             public void deleteById(String id) {
-                throwNoteException("Exception while deleting note with id: " + id + " from note service.");
+                throwNoteException("\u26a0 \u2007 Error while deleting note with id: " + id + ".");
             }
 
             @Override
             public void deleteByPatientId(long id) {
-                throwNoteException("Exception while deleting notes for patient with id: " + id + " from note service.");
+                throwNoteException("\u26a0 \u2007 Error while deleting notes for patient with id: " + id + ".");
             }
 
             private void throwNoteException(String message) {
 
                 if (cause instanceof FeignException.BadRequest) {
-                    throw new NoteClientException("Bad request: " + message);
+                    throw new NoteClientException(message + " (Bad request)");
                 }
                 if (cause instanceof FeignException.NotFound) {
-                    throw new NoteClientException("Not Found: " + message);
+                    throw new NoteClientException(message + " (Not Found)");
                 }
                 if (cause instanceof RetryableException) {
-                    throw new UnavailableNoteClientException("Service unavailable: " + message);
+                    throw new UnavailableNoteClientException(message + " Service is unavailable.");
                 }
                 throw new NoteClientException(message);
             }

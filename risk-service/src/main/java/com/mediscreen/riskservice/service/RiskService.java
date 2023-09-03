@@ -7,6 +7,7 @@ import com.mediscreen.riskservice.model.Patient;
 import com.mediscreen.riskservice.model.RiskLevel;
 import com.mediscreen.riskservice.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -22,18 +23,8 @@ public class RiskService implements IRiskService {
     private NoteClient noteClient;
 
     // TODO mettre la liste dans app properties, avec un séparateur et split string
-    List<String> keywords = Arrays.asList(
-            "Hémoglobine A1C",
-            "Microalbumine",
-            "Taille",
-            "Poids",
-            "Fumeur",
-            "Anormal",
-            "Cholestérol",
-            "Vertige",
-            "Rechute",
-            "Réaction",
-            "Anticorps");
+    @Value("#{'${risk-keywords}'.split(',')}")
+    List<String> keywords;
 
     @Override
     public RiskLevel getPatientRisk(Long id) {

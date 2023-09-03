@@ -22,7 +22,7 @@ class RiskServiceTest {
     @Test
     void getRisk() {
         // Arrange
-        when(client.getRisk(anyLong())).thenReturn(RiskLevel.NONE);
+        when(client.getRisk(anyLong())).thenReturn(String.valueOf(RiskLevel.NONE));
 
         // Act
         service.getRisk(1l);

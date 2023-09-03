@@ -21,20 +21,20 @@ public class RiskClientFallbackFactory implements FallbackFactory<RiskClient> {
         return new RiskClient() {
             @Override
             public String getRisk(long id) {
-                throwRiskClientException("Could not get risk level for patient with id: " + id + " from risk service.");
+                throwRiskClientException("\u26a0 \u2007 Could not get risk level for patient with id: " + id + " from risk service.");
                 return null;
             }
 
             private void throwRiskClientException(String message) {
 
                 if (cause instanceof FeignException.BadRequest) {
-                    throw new RiskClientException("Bad request: " + message);
+                    throw new RiskClientException(message + " (Bad request)");
                 }
                 if (cause instanceof FeignException.NotFound) {
-                    throw new RiskClientException("Not Found: " + message);
+                    throw new RiskClientException(message + " (Not Found)");
                 }
                 if (cause instanceof RetryableException) {
-                    throw new UnavailableRiskClientException("Service unavailable: " + message);
+                    throw new UnavailableRiskClientException(message + " Service is unavailable.");
                 }
 
                 throw new RiskClientException(message);

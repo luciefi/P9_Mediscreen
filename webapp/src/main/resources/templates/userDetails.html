@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Delete user</title>
+    <title>User details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
@@ -10,38 +10,39 @@
 <body>
 <div class="container">
     <div class="col-6 offset-3">
-        <a class="btn btn-link" href="/user/list">
+        <a class="btn btn-link mt-3" href="/user/list">
             ← Back to list
         </a>
         <div class="card text-dark bg-light my-3">
             <div class="card-body">
-                <h2 class="card-title text-center">Delete User</h2>
-                <p class="text-center mb-3 h6">Do you want to delete this user from the database?</p>
-                <hr/>
-                <form method="post"
-                      th:action="@{/user/delete/{login}(login=${user.login})}" th:object="${user}">
+                <h2 class="card-title text-center my-3" th:text="${user.login}"></h2>
 
+                <div th:object="${user}" class="my-3" >
                     <div class="row m-3">
                         <div class="col-4 h6 p-1">Login</div>
                         <p th:text="*{login}" class="col-8 px-1"></p>
                     </div>
-
                     <div class="row m-3">
                         <div class="col-4 h6 p-1">Role</div>
-                        <p th:text="*{role} == 'ROLE_USER' ? 'User' : 'Admin' " class="col-4 px-1"></p>
+                        <p th:text="*{role} == 'ROLE_ADMIN' ? 'Admin' : 'User' " class="col-4 px-1"></p>
                     </div>
+                    <div class="row m-3">
+                        <div class="col-4 h6 p-1">Date of creation</div>
+                        <p th:text="*{creationDate} " class="col-4 px-1"></p>
+                    </div>
+                </div>
 
-                    <div class="d-flex align-items-center justify-content-center">
-                        <a class="btn btn-secondary" href="/user/list">
-                            Cancel
-                        </a>
-                        <button type="submit" class="m-3 btn btn-danger">Delete</button>
-                    </div>
-                </form>
+                <div class="d-flex align-items-center justify-content-center my-3">
+                    <a th:href="@{/user/update/{login}(login=${user.login})}" class="btn btn-primary m-1">
+                        Update
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

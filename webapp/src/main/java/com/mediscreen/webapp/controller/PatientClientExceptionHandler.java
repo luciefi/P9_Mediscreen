@@ -21,6 +21,6 @@ public class PatientClientExceptionHandler {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/patient/list";
         }
-        return "redirect:/patient/list/unavailable";
+        return "patientListUnavailable";
     }
 }

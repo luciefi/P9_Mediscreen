@@ -14,28 +14,28 @@ class NoteClientFallbackFactoryTest {
 
     @Test
     void findAll() {
-        assertNull(noteClientFallbackFactory.findAll(1, 1, 1));
+        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.create(new Throwable()).findAll(1, 1, 1));
     }
 
     @Test
     void findById() {
-        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.findById("123"));
+        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.create(new Throwable()).findById("123"));
     }
 
     @Test
     void createNote() {
-        assertDoesNotThrow(() -> noteClientFallbackFactory.createNote(new NoteCreate()));
+        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.create(new Throwable()).createNote(new NoteCreate()));
     }
 
     @Test
     void save() {
         NoteUpdate note = new NoteUpdate();
         note.setId("123");
-        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.save(note));
+        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.create(new Throwable()).save(note));
     }
 
     @Test
     void deleteById() {
-        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.deleteById("123"));
+        assertThrows(NoteClientException.class, () -> noteClientFallbackFactory.create(new Throwable()).deleteById("123"));
     }
 }

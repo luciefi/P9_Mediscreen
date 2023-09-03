@@ -59,7 +59,7 @@ public class NotesController {
         } catch (NoteClientException e) {
             return handleNoteClientException(e, patientId, redirectAttributes);
         } catch (UnavailableNoteClientException e) {
-            return handleUnavailableNoteClientException(e, patientId);
+            return handleUnavailableNoteClientException(e, patientId, model);
         }
     }
 
@@ -84,14 +84,8 @@ public class NotesController {
         } catch (NoteClientException e) {
             return handleNoteClientException(e, patientId, redirectAttributes);
         } catch (UnavailableNoteClientException e) {
-            return handleUnavailableNoteClientException(e, patientId);
+            return "noteListUnavailable";
         }
-    }
-
-    @GetMapping("/{patientId}/unavailable")
-    public String getNoteListUnavailable(@PathVariable("patientId") long patientId, Model model) {
-        addPatientToModel(patientId, model);
-        return "noteListUnavailable";
     }
 
     @GetMapping("/{patientId}/details/{id}")
@@ -104,7 +98,7 @@ public class NotesController {
         } catch (NoteClientException e) {
             return handleNoteClientException(e, patientId, redirectAttributes);
         } catch (UnavailableNoteClientException e) {
-            return handleUnavailableNoteClientException(e, patientId);
+            return handleUnavailableNoteClientException(e, patientId, model);
         }
     }
 
@@ -120,7 +114,7 @@ public class NotesController {
         } catch (NoteClientException e) {
             return handleNoteClientException(e, patientId, redirectAttributes);
         } catch (UnavailableNoteClientException e) {
-            return handleUnavailableNoteClientException(e, patientId);
+            return handleUnavailableNoteClientException(e, patientId, model);
         }
     }
 
@@ -139,7 +133,7 @@ public class NotesController {
         } catch (NoteClientException e) {
             return handleNoteClientException(e, patientId, redirectAttributes);
         } catch (UnavailableNoteClientException e) {
-            return handleUnavailableNoteClientException(e, patientId);
+            return handleUnavailableNoteClientException(e, patientId, model);
         }
     }
 
@@ -153,12 +147,12 @@ public class NotesController {
         } catch (NoteClientException e) {
             return handleNoteClientException(e, patientId, redirectAttributes);
         } catch (UnavailableNoteClientException e) {
-            return handleUnavailableNoteClientException(e, patientId);
+            return handleUnavailableNoteClientException(e, patientId, model);
         }
     }
 
     @PostMapping("/{patientId}/delete/{id}")
-    public String deleteNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, RedirectAttributes redirectAttributes) {
+    public String deleteNote(@PathVariable("patientId") long patientId, @PathVariable("id") String id, RedirectAttributes redirectAttributes, Model model) {
         try {
             noteService.deleteNote(id);
             logger.info("Note with id: " + id + " deleted");
@@ -166,7 +160,7 @@ public class NotesController {
         } catch (NoteClientException e) {
             return handleNoteClientException(e, patientId, redirectAttributes);
         } catch (UnavailableNoteClientException e) {
-            return handleUnavailableNoteClientException(e, patientId);
+            return handleUnavailableNoteClientException(e, patientId, model);
         }
     }
 
@@ -181,8 +175,9 @@ public class NotesController {
         return "redirect:/notes/" + patientId;
     }
 
-    public String handleUnavailableNoteClientException(Exception e, long patientId) {
+    public String handleUnavailableNoteClientException(Exception e, long patientId, Model model) {
         logger.error(e.getMessage());
-        return "redirect:/notes/" + patientId + "/unavailable";
+        addPatientToModel(patientId, model);
+        return "noteListUnavailable";
     }
 }

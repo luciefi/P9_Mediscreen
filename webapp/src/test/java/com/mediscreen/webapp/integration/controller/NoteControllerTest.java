@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(username = "user", authorities = {"ROLE_USER"})
 public class NoteControllerTest {
 
     @MockBean
@@ -78,6 +80,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void addNoteTest() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -95,6 +98,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void addNoteTest_PatientNotFound() throws Exception {
         // Arrange
         when(patientService.getPatient(anyLong())).thenThrow(PatientClientException.class);
@@ -110,6 +114,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void addNotePostTest() throws Exception {
         mockMvc.perform(post("/notes/2/add")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -122,6 +127,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void addNotePostFormErrorTest() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -142,6 +148,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void note() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -162,6 +169,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void note_NotFound() throws Exception {
         // Arrange
         when(service.getNote(anyString())).thenThrow(NoteClientException.class);
@@ -177,6 +185,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void updateNoteForm() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -198,6 +207,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void updateNoteFormNotFound() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -217,6 +227,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void updateNotePostTest() throws Exception {
         mockMvc.perform(post("/notes/2/update/1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -229,6 +240,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void updateNotePostFormErrorNoContentTest() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -249,6 +261,7 @@ public class NoteControllerTest {
 
 
     @Test
+
     public void deleteNoteForm() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -270,6 +283,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void deleteNoteFormNotFound() throws Exception {
         // Arrange
         Patient patient = new Patient();
@@ -287,6 +301,7 @@ public class NoteControllerTest {
     }
 
     @Test
+
     public void deleteNotePostTest() throws Exception {
         mockMvc.perform(post("/notes/2/delete/1"))
                 .andDo(print())

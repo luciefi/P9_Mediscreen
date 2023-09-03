@@ -29,7 +29,7 @@
                 </ul>
 
                 <div class="alert alert-warning my-3 text-center" th:if="${#strings.isEmpty(errorMessage)}">
-                    <small> Risk Service is currently unavailable. Please try again later.</small>
+                    <small>⚠ Risk Service is currently unavailable. Please try again later.</small>
                 </div>
                 <div class="alert alert-danger my-3 text-center" th:unless="${#strings.isEmpty(errorMessage)}">
                     <p th:text="${'An error occurred.'}"></p>

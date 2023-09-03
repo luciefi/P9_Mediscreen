@@ -1,16 +1,22 @@
 package com.mediscreen.webapp.controller;
 
+import com.mediscreen.webapp.exception.LoginAlreadyExistsException;
 import com.mediscreen.webapp.exception.UserClientException;
+import com.mediscreen.webapp.exception.LoginNotFoundException;
 import com.mediscreen.webapp.model.User;
+import com.mediscreen.webapp.model.UserCreate;
 import com.mediscreen.webapp.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,20 +37,27 @@ public class UserController {
 
     @GetMapping("/add")
     public String createUser(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
+        UserCreate userCreate = new UserCreate();
+        model.addAttribute("userCreate", userCreate);
         return "addUser";
     }
 
     @PostMapping("/add")
-    public String saveNewUser(@Valid User user, BindingResult result) {
+    public String saveNewUser(@Valid UserCreate userCreate, BindingResult result) {
         if (result.hasErrors()) {
             logger.info("Cannot add user : invalid form");
             return "addUser";
         }
-        service.saveNewUser(user);
-        logger.info("New user added");
-        return "redirect:/user/list";
+        try {
+            service.saveNewUser(userCreate);
+            logger.info("New user added");
+            return "redirect:/user/list";
+        } catch (LoginAlreadyExistsException e) {
+            logger.info("Cannot add user : " + e.getMessage());
+            ObjectError error = new ObjectError("globalError", e.getMessage());
+            result.addError(error);
+            return "addUser";
+        }
     }
 
     @GetMapping("/list")
@@ -64,8 +77,6 @@ public class UserController {
 
         return "userList";
     }
-
-
 
     @GetMapping("/details/{login}")
     public String getDetailsUserForm(@PathVariable("login") String login, Model model) {
@@ -124,5 +135,9 @@ public class UserController {
         return "redirect:/user/list";
     }
 
-
+    @ExceptionHandler({LoginNotFoundException.class})
+    public ResponseEntity<?> handleNotFoundException(Exception e) {
+        logger.error("Not found exception: {}", e.getMessage());
+        return new ResponseEntity<>("Not found exception: " + e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

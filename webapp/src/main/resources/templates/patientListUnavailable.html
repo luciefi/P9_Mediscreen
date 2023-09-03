@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Patient list</title>
@@ -14,10 +14,11 @@
         crossorigin="anonymous"></script>
 <div class="container">
     <div class="row mt-5">
-        <div class="alert alert-warning my-3 col-6 offset-3">
+        <div class="alert alert-warning my-3 col-6 offset-3  text-center">
             <div class="h1 text-center mt-3">Mediscreen</div>
             <div class="h6 text-center my-3">Application unavailable</div>
             <p class="text-center">Patient service is unavailable. Please try again later.</p>
+            <a th:href="@{/logout}" class="btn btn-outline-secondary"> &#x21F0; Logout</a>
         </div>
     </div>
 </div>

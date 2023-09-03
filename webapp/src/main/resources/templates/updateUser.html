@@ -20,7 +20,6 @@
                 <form method="post"
                       th:action="@{/user/update/{login}(login=${user.login})}" th:object="${user}">
                     <div class="card-text">
-
                         <div class=" m-3">
                             <div class="alert alert-danger alert-dismissible fade show my-2" role="alert"
                                  th:each="err : ${#fields.errors('global')}">
@@ -28,15 +27,9 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close"></button>
                             </div>
-                            <label for="loginInput" class="form-label h6 p-1">Login</label>
-                            <input
-                                    type="text" th:field="*{login}" class="form-control" id="loginInput"
-                                    placeholder="Login" maxlength="64">
-                            <div class="text-danger p-1">
-                                <small th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></small>
-                            </div>
+                            <div class="form-label h6 p-1">Login</div>
+                            <p th:text="*{login}" class="p-1"></p>
                         </div>
-
                         <div class=" m-3">
                             <label for="passwordInput" class="form-label h6 p-1">Password</label>
                             <input
@@ -48,19 +41,17 @@
                         </div>
 
                         <div class=" m-3">
-                            <div class="row align-items-center">
-                                <div class="col-4">
-                                    <label class="h6 p-1 form-label">Role</label>
-                                </div>
-                                <div class="col-5 btn-group">
-                                    <input type="radio" id="user" name="user" class="btn-check" value="U"
-                                           th:field="*{role}">
-                                    <label class="btn btn-outline-primary" for="user">User</label>
+                            <div class="col-4">
+                                <label class="h6 p-1 form-label">Role</label>
+                            </div>
+                            <div class="col-5 btn-group p-1">
+                                <input type="radio" id="user" name="user" class="btn-check" value="ROLE_USER"
+                                       th:field="*{role}">
+                                <label class="btn btn-outline-primary" for="user">User</label>
 
-                                    <input type="radio" id="admin" name="admin" class="btn-check" value="A"
-                                           th:field="*{role}">
-                                    <label class="btn btn-outline-primary" for="admin">Admin</label>
-                                </div>
+                                <input type="radio" id="admin" name="admin" class="btn-check" value="ROLE_ADMIN"
+                                       th:field="*{role}">
+                                <label class="btn btn-outline-primary" for="admin">Admin</label>
                             </div>
                             <small class="text-danger p-1" th:if="${#fields.hasErrors('role')}"
                                    th:errors="*{role}"></small>

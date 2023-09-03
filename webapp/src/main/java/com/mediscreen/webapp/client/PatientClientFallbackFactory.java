@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PatientClientFallbackFactory implements FallbackFactory<PatientClient> {
 
-
     Logger logger = LoggerFactory.getLogger(PatientClientFallbackFactory.class);
 
     @Override
@@ -25,40 +24,40 @@ public class PatientClientFallbackFactory implements FallbackFactory<PatientClie
 
             @Override
             public Page<Patient> findAll(int pageNumber, int itemPerPage) {
-                throwPatientClientException("Exception while retrieving patient list from patient service.");
+                throwPatientClientException("\u26a0 \u2007 Error while retrieving patient list.");
                 return null;
             }
 
             @Override
             public Patient findById(Long id) {
-                throwPatientClientException("Exception while retrieving patient details with id: " + id + " from patient service.");
+                throwPatientClientException("\u26a0 \u2007 Error while retrieving patient details with id: " + id + ".");
                 return null;
             }
 
             @Override
             public void createPatient(Patient patient) {
-                throwPatientClientException("Exception while saving new patient " + patient.getGivenName() + patient.getFamilyName() + " in patient service.");
+                throwPatientClientException("\u26a0 \u2007 Error while saving new patient " + patient.getGivenName() + patient.getFamilyName() + ".");
             }
 
             @Override
             public void save(Patient patient) {
-                throwPatientClientException("Exception while updating patient " + patient.getGivenName() + patient.getFamilyName() + " with id: " + patient.getId() + " in patient service.");
+                throwPatientClientException("\u26a0 \u2007 Error while updating patient " + patient.getGivenName() + patient.getFamilyName() + " with id: " + patient.getId() + ".");
             }
 
             @Override
             public void deleteById(Long id) {
-                throwPatientClientException("Exception while deleting patient with id: " + id + " from patient service.");
+                throwPatientClientException("\u26a0 \u2007 Error while deleting patient with id: " + id + ".");
             }
 
             private void throwPatientClientException(String message) {
                 if (cause instanceof FeignException.BadRequest) {
-                    throw new PatientClientException("Bad request: " + message);
+                    throw new PatientClientException(message + " (Bad request)");
                 }
                 if (cause instanceof FeignException.NotFound) {
-                    throw new PatientClientException("Not Found: " + message);
+                    throw new PatientClientException(message + " (Not Found)");
                 }
                 if (cause instanceof RetryableException) {
-                    throw new UnavailablePatientClientException("Service unavailable: " + message);
+                    throw new UnavailablePatientClientException(message + " Service is unavailable.");
                 }
                 throw new PatientClientException(message);
             }

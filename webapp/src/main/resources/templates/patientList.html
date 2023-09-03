@@ -17,14 +17,17 @@
         <div class="container">
             <div class="row">
                 <h2 class="h2 col-5 text-start p-0 m-0">Patient list</h2>
-                <div class="col-5 offset-2 text-end">
+                <div class="col-4 offset-3 text-end">
                     <a class="btn btn-primary" href="/patient/add">Add new patient
                     </a>
+                    <a th:href="@{/logout}" class="btn btn-outline-primary" > &#x21F0; Logout</a>
                 </div>
             </div>
         </div>
-        <div th:unless="${#strings.isEmpty(errorMessage)}" class="alert alert-danger mt-3 mb-0">
+        <div th:unless="${#strings.isEmpty(errorMessage)}" class="alert alert-danger alert-dismissible fade show mt-3 mb-0">
             <small th:text=${errorMessage}></small>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
         </div>
         <div class="mt-4 border text-center">
             <table class="table table-hover table-sm">

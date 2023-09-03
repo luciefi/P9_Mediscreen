@@ -12,28 +12,28 @@ class PatientClientFallbackFactoryTest {
 
     @Test
     void findAll() {
-        assertNull(patientClientFallbackFactory.findAll(1,1));
+        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.create(new Throwable()).findAll(1, 1));
     }
 
     @Test
     void findById() {
-        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.findById(1l));
+        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.create(new Throwable()).findById(1l));
     }
 
     @Test
     void createPatient() {
-        assertDoesNotThrow(() -> patientClientFallbackFactory.createPatient(new Patient()));
+        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.create(new Throwable()).createPatient(new Patient()));
     }
 
     @Test
     void save() {
         Patient patient = new Patient();
         patient.setId(1l);
-        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.save(patient));
+        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.create(new Throwable()).save(patient));
     }
 
     @Test
     void deleteById() {
-        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.deleteById(1l));
+        assertThrows(PatientClientException.class, () -> patientClientFallbackFactory.create(new Throwable()).deleteById(1l));
     }
 }

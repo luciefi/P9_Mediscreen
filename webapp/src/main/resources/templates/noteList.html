@@ -29,8 +29,11 @@
                     </li>
                 </ul>
 
-                <div th:unless="${#strings.isEmpty(errorMessage)}" class="alert alert-danger mt-3 mb-0">
+                <div th:unless="${#strings.isEmpty(errorMessage)}"
+                     class="alert alert-danger alert-dismissible fade show  mt-3 mb-0">
                     <small th:text=${errorMessage}></small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
                 </div>
                 <div class="col-5 offset-2 text-end py-3">
                     <a class="btn btn-primary" th:href="@{/notes/{id}/add(id=${patient.id})}">&#8853; New note

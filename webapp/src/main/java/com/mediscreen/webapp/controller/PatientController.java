@@ -62,12 +62,6 @@ public class PatientController {
         return "patientList";
     }
 
-    @GetMapping("/list/unavailable")
-    public String getPatientListUnavailable() {
-        return "patientListUnavailable";
-    }
-
-
     @GetMapping("/details/{id}")
     public String getDetailsPatientForm(@PathVariable("id") long id, Model model) {
         Patient patient = service.getPatient(id);
@@ -81,9 +75,7 @@ public class PatientController {
         model.addAttribute("patient", patient);
         String cancelUrl = referrer != null && referrer.contains("/patient/details/") ? "/patient/details/" + id : "/patient/list";
         model.addAttribute("cancelUrl", cancelUrl);
-
         return "updatePatient";
-
     }
 
     @PostMapping("/update/{id}")
@@ -110,5 +102,4 @@ public class PatientController {
         logger.info("Patient with id: " + id + " deleted");
         return "redirect:/patient/list";
     }
-
 }

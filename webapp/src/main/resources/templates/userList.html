@@ -17,9 +17,9 @@
         <div class="container">
             <div class="row">
                 <h2 class="h2 col-5 text-start p-0 m-0">User list</h2>
-                <div class="col-5 offset-2 text-end">
-                    <a class="btn btn-primary" href="/user/add">Add new user
-                    </a>
+                <div class="col-4 offset-3 text-end">
+                    <a class="btn btn-primary" href="/user/add">Add new user</a>
+                    <a th:href="@{/logout}" class="btn btn-outline-primary" > &#x21F0; Logout</a>
                 </div>
             </div>
         </div>
@@ -28,6 +28,8 @@
                 <thead class="bg-primary text-white">
                 <tr>
                     <th>Login</th>
+                    <th>Role</th>
+                    <th></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -36,8 +38,9 @@
                     <td colspan="4">No user found</td>
                 </tr>
                 <tr th:each="user: ${userPage.content}">
-                    <td th:text="${user.login}"></td>
-                    <td>
+                    <td><a th:href="@{/user/details/{login}(login=${user.login})}" th:text="${user.login}"></a></td>
+                    <td><span th:text="${user.role} == 'ROLE_ADMIN' ? 'Admin' : 'User'"></span></td>
+                    <td class="text-end">
                         <div class="btn-group btn-group-sm" role="group">
                             <a th:href="@{/user/update/{login}(login=${user.login})}" class="btn btn-primary">
                                 Update
@@ -47,6 +50,7 @@
                             </a>
                         </div>
                     </td>
+                    <td></td>
                 </tr>
                 </tbody>
             </table>

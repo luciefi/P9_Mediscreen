@@ -22,7 +22,6 @@ public class RiskService implements IRiskService {
     @Autowired
     private NoteClient noteClient;
 
-    // TODO mettre la liste dans app properties, avec un séparateur et split string
     @Value("#{'${risk-keywords}'.split(',')}")
     List<String> keywords;
 
@@ -33,7 +32,7 @@ public class RiskService implements IRiskService {
         boolean isUnder30 = DateUtils.getAge(patient.getDateOfBirth()) < 30;
         int numberOfTerms = getNumberOfTerms(noteClient.findAll(id));
 
-        return getRiskLevel(isUnder30, patient.getSex().equals('M'), numberOfTerms);
+        return getRiskLevel(isUnder30, patient.getSex().equals("M"), numberOfTerms);
     }
 
     private int getNumberOfTerms(List<NoteRead> notes) {
@@ -45,7 +44,6 @@ public class RiskService implements IRiskService {
             }
         }
         return numberOfTerms;
-        //return (int) Math.floor(Math.random() * 8);
     }
 
     private static RiskLevel getRiskLevel(boolean isUnder30, boolean isMale, int numberOfTerms) {

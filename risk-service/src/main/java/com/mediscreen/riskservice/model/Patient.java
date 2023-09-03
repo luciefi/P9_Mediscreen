@@ -1,10 +1,12 @@
 package com.mediscreen.riskservice.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
 public class Patient {
 
     private Long id;

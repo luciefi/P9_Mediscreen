@@ -71,6 +71,8 @@
 				<version>0.8.10</version>
 				<configuration>
 					<excludes>
+						<exclude>**/*RiskServiceApplication.class</exclude>
+						<exclude>com/mediscreen/riskservice/model/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>

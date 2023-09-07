@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class})
@@ -37,6 +37,7 @@ public class UserServiceTest {
         // Arrange
         UserCreate user = new UserCreate();
         user.setLogin("login");
+        user.setPassword("password");
         when(repository.findByLogin(anyString())).thenReturn(Optional.empty());
 
         // Act
@@ -45,6 +46,7 @@ public class UserServiceTest {
         // Assert
         verify(repository, times(1)).findByLogin("login");
         verify(repository, times(1)).save(any(User.class));
+        verify(passwordEncoder, times(1)).encode(anyString());
     }
 
     @Test
@@ -97,7 +99,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUser_samePasswordNull() {
         // Arrange
         User user = new User();
         user.setLogin("login");
@@ -109,6 +111,42 @@ public class UserServiceTest {
         // Assert
         verify(repository, times(1)).findByLogin("login");
         verify(repository, times(1)).save(user);
+        verify(passwordEncoder, times(0)).encode(anyString());
+    }
+
+    @Test
+    void updateUser_samePasswordEmpty() {
+        // Arrange
+        User user = new User();
+        user.setLogin("login");
+        user.setPassword("");
+        when(repository.findByLogin(anyString())).thenReturn(Optional.of(user));
+
+        // Act
+        service.updateUser(user);
+
+        // Assert
+        verify(repository, times(1)).findByLogin("login");
+        verify(repository, times(1)).save(user);
+        verify(passwordEncoder, times(0)).encode(anyString());
+    }
+
+    @Test
+    void updateUser_newPassword() {
+        // Arrange
+        User user = new User();
+        user.setLogin("login");
+        user.setPassword("password");
+        when(repository.findByLogin(anyString())).thenReturn(Optional.of(user));
+
+        // Act
+        service.updateUser(user);
+
+        // Assert
+        verify(repository, times(1)).findByLogin("login");
+        verify(repository, times(1)).save(user);
+        assertNull(user.getPassword());
+        verify(passwordEncoder, times(1)).encode(anyString());
     }
 
     @Test

@@ -79,7 +79,6 @@ public class PatientControllerTest {
     }
 
     @Test
-
     public void updatePatientForm() throws Exception {
         Patient patient = new Patient();
         when(service.getPatient(anyLong())).thenReturn(patient);
@@ -88,7 +87,6 @@ public class PatientControllerTest {
     }
 
     @Test
-
     public void updatePatientFormNotFound() throws Exception {
         when(service.getPatient(anyLong())).thenThrow(PatientClientException.class);
         mockMvc.perform(get("/patient/update/1")).andDo(print()).andExpect(status().isFound()).andExpect(view().name("redirect:/patient/list"));
@@ -96,7 +94,6 @@ public class PatientControllerTest {
     }
 
     @Test
-
     public void updatePatientPostTest() throws Exception {
         mockMvc.perform(post("/patient/update/1").contentType(MediaType.APPLICATION_FORM_URLENCODED).content("familyName=TestNone&givenName=Test&dateOfBirth=1966-12-31&sex=F&address=1BrooksideSt&phone=100-222-3333")).andDo(print()).andExpect(status().isFound()).andExpect(view().name("redirect:/patient/list"));
         verify(service, Mockito.times(1)).updatePatient(any(Patient.class));

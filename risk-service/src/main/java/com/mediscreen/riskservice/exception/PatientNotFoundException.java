@@ -1,8 +1,7 @@
 package com.mediscreen.riskservice.exception;
 
-
-public class PatientNotFoundException  extends NotFoundException {
-    public PatientNotFoundException() {
-        super("Patient could not be found");
+public class PatientNotFoundException extends IllegalArgumentException {
+    public PatientNotFoundException(String message) {
+        super(message);
     }
 }

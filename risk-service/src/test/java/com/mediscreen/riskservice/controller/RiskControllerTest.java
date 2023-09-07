@@ -1,5 +1,8 @@
 package com.mediscreen.riskservice.controller;
 
+import com.mediscreen.riskservice.exception.ClientException;
+import com.mediscreen.riskservice.exception.PatientClientException;
+import com.mediscreen.riskservice.exception.PatientNotFoundException;
 import com.mediscreen.riskservice.model.RiskLevel;
 import com.mediscreen.riskservice.service.IRiskService;
 import org.junit.jupiter.api.Test;
@@ -48,5 +51,32 @@ class RiskControllerTest {
         // Assert
         verify(service, Mockito.times(0)).getPatientRisk(anyLong());
     }
+
+    @Test
+    void getPatientById_ClientException() throws Exception {
+        // Arrange
+        when(service.getPatientRisk(anyLong())).thenThrow(ClientException.class);
+
+        // Act
+        mockMvc.perform(get("/risk/1"))
+                .andExpect(status().isInternalServerError());
+
+        // Assert
+        verify(service, Mockito.times(1)).getPatientRisk(1l);
+    }
+
+    @Test
+    void getPatientById_NotFoundException() throws Exception {
+        // Arrange
+        when(service.getPatientRisk(anyLong())).thenThrow(PatientNotFoundException.class);
+
+        // Act
+        mockMvc.perform(get("/risk/1"))
+                .andExpect(status().isNotFound());
+
+        // Assert
+        verify(service, Mockito.times(1)).getPatientRisk(1l);
+    }
+
 
 }

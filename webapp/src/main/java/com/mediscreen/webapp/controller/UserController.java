@@ -54,7 +54,7 @@ public class UserController {
             return "redirect:/user/list";
         } catch (LoginAlreadyExistsException e) {
             logger.info("Cannot add user : " + e.getMessage());
-            ObjectError error = new ObjectError("globalError", e.getMessage());
+            ObjectError error = new ObjectError("globalError", "Cannot add user : " + e.getMessage());
             result.addError(error);
             return "addUser";
         }
@@ -136,8 +136,8 @@ public class UserController {
     }
 
     @ExceptionHandler({LoginNotFoundException.class})
-    public ResponseEntity<?> handleNotFoundException(Exception e) {
+    public String handleNotFoundException(Exception e) {
         logger.error("Not found exception: {}", e.getMessage());
-        return new ResponseEntity<>("Not found exception: " + e.getMessage(), HttpStatus.NOT_FOUND);
+        return "redirect:/user/list";
     }
 }

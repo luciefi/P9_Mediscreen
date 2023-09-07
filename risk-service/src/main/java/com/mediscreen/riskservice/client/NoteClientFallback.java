@@ -1,7 +1,7 @@
 package com.mediscreen.riskservice.client;
 
+import com.mediscreen.riskservice.exception.NoteClientException;
 import com.mediscreen.riskservice.model.NoteRead;
-import com.mediscreen.riskservice.exception.NoteNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,8 @@ public class NoteClientFallback implements NoteClient {
 
     @Override
     public List<NoteRead> findAll(long patientId) {
-        return null;
+        String message = "Could not retrieve note list for patient with id: " + patientId;
+        logger.info(message);
+        throw new NoteClientException(message);
     }
-
 }

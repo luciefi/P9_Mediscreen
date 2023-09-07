@@ -1,6 +1,8 @@
 package com.mediscreen.webapp.integration.controller;
 
 import com.mediscreen.webapp.exception.PatientClientException;
+import com.mediscreen.webapp.exception.RiskClientException;
+import com.mediscreen.webapp.exception.UnavailablePatientClientException;
 import com.mediscreen.webapp.model.Patient;
 import com.mediscreen.webapp.model.RiskLevel;
 import com.mediscreen.webapp.service.IPatientService;
@@ -36,8 +38,8 @@ public class RiskControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(username = "user", authorities = { "ROLE_USER" })
-    public void patientDetails() throws Exception {
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void getRiskLevel() throws Exception {
         // Arrange
         Patient patient = new Patient();
         when(patientService.getPatient(anyLong())).thenReturn(patient);
@@ -51,10 +53,26 @@ public class RiskControllerTest {
         verify(service, Mockito.times(1)).getRisk(1l);
     }
 
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void getRiskLevelRiskClientException() throws Exception {
+        // Arrange
+        Patient patient = new Patient();
+        when(patientService.getPatient(anyLong())).thenReturn(patient);
+        when(service.getRisk(anyLong())).thenThrow(RiskClientException.class);
+
+        // Act
+        mockMvc.perform(get("/risk/1")).andDo(print()).andExpect(status().isOk()).andExpect(view().name("riskUnavailable"));
+
+        // Assert
+        verify(patientService, Mockito.times(1)).getPatient(1l);
+        verify(service, Mockito.times(1)).getRisk(1l);
+    }
+
 
     @Test
-    @WithMockUser(username = "user", authorities = { "ROLE_USER" })
-    public void getRiskPatientNotFound() throws Exception {
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void getRiskPatientClientException() throws Exception {
         // Arrange
         when(patientService.getPatient(anyLong())).thenThrow(PatientClientException.class);
 
@@ -67,18 +85,16 @@ public class RiskControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", authorities = { "ROLE_USER" })
-    public void getRiskPatientNotFoundByRiskService() throws Exception {
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void getRiskWithPatientServiceUnavailable() throws Exception {
         // Arrange
-        Patient patient = new Patient();
-        when(patientService.getPatient(anyLong())).thenReturn(patient);
-        when(service.getRisk(anyLong())).thenThrow(PatientClientException.class);
+        when(patientService.getPatient(anyLong())).thenThrow(UnavailablePatientClientException.class);
 
         // Act
-        mockMvc.perform(get("/risk/1")).andDo(print()).andExpect(status().isFound()).andExpect(view().name("redirect:/patient/list"));
+        mockMvc.perform(get("/risk/1")).andDo(print()).andExpect(status().isOk()).andExpect(view().name("patientListUnavailable"));
 
         // Assert
         verify(patientService, Mockito.times(1)).getPatient(1l);
-        verify(service, Mockito.times(1)).getRisk(1l);
+        verify(service, Mockito.times(0)).getRisk(1l);
     }
 }

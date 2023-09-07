@@ -36,12 +36,12 @@ public class PatientClientFallbackFactory implements FallbackFactory<PatientClie
 
             @Override
             public void createPatient(Patient patient) {
-                throwPatientClientException("\u26a0 \u2007 Error while saving new patient " + patient.getGivenName() + patient.getFamilyName() + ".");
+                throwPatientClientException("\u26a0 \u2007 Error while saving new patient " + patient.getGivenName() + " " + patient.getFamilyName() + ".");
             }
 
             @Override
             public void save(Patient patient) {
-                throwPatientClientException("\u26a0 \u2007 Error while updating patient " + patient.getGivenName() + patient.getFamilyName() + " with id: " + patient.getId() + ".");
+                throwPatientClientException("\u26a0 \u2007 Error while updating patient " + patient.getGivenName() + " " + patient.getFamilyName() + " with id: " + patient.getId() + ".");
             }
 
             @Override
@@ -54,7 +54,7 @@ public class PatientClientFallbackFactory implements FallbackFactory<PatientClie
                     throw new PatientClientException(message + " (Bad request)");
                 }
                 if (cause instanceof FeignException.NotFound) {
-                    throw new PatientClientException(message + " (Not Found)");
+                    throw new PatientClientException(message + " (Not found)");
                 }
                 if (cause instanceof RetryableException) {
                     throw new UnavailablePatientClientException(message + " Service is unavailable.");

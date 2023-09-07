@@ -94,6 +94,9 @@
                 <version>0.8.10</version>
                 <configuration>
                     <excludes>
+                        <exclude>**/*WebAppApplication.class</exclude>
+                        <exclude>com/mediscreen/webapp/exception/*</exclude>
+                        <exclude>com/mediscreen/webapp/config/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

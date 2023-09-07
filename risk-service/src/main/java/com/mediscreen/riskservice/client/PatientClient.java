@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "details-service", url = "${patient-client-url}", fallback = PatientClientFallback.class)
+@FeignClient(name = "details-service", url = "${patient-client-url}", fallbackFactory = PatientClientFallbackFactory.class)
 public interface PatientClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", produces = "application/json")

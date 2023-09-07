@@ -1,5 +1,7 @@
 package com.mediscreen.webapp.integration.controller;
 
+import com.mediscreen.webapp.exception.LoginAlreadyExistsException;
+import com.mediscreen.webapp.exception.LoginNotFoundException;
 import com.mediscreen.webapp.exception.UserClientException;
 import com.mediscreen.webapp.model.User;
 import com.mediscreen.webapp.model.UserCreate;
@@ -19,8 +21,7 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -62,6 +63,13 @@ public class UserControllerTest {
     }
 
     @Test
+    public void addUserPostTest_AlreadyExistsException() throws Exception {
+        doThrow(LoginAlreadyExistsException.class).when(service).saveNewUser(any(UserCreate.class));
+        mockMvc.perform(post("/user/add").contentType(MediaType.APPLICATION_FORM_URLENCODED).content("login=login&password=password&role=ROLE_USER")).andDo(print()).andExpect(status().isOk()).andExpect(view().name("addUser"));
+        verify(service, Mockito.times(1)).saveNewUser(any(UserCreate.class));
+    }
+
+    @Test
     public void addUserPostFormErrorTest() throws Exception {
         mockMvc.perform(post("/user/add").contentType(MediaType.APPLICATION_FORM_URLENCODED).content("login=login&password=password&role=ROLE")).andDo(print()).andExpect(status().isOk()).andExpect(view().name("addUser"));
         verify(service, Mockito.never()).saveNewUser(any(UserCreate.class));
@@ -72,6 +80,27 @@ public class UserControllerTest {
         User user = new User();
         when(service.getUser(anyString())).thenReturn(user);
         mockMvc.perform(get("/user/details/login")).andDo(print()).andExpect(status().isOk()).andExpect(view().name("userDetails"));
+        verify(service, Mockito.times(1)).getUser("login");
+    }
+
+    @Test
+    public void userDetails_NotFound() throws Exception {
+        User user = new User();
+        when(service.getUser(anyString())).thenThrow(LoginNotFoundException.class);
+        mockMvc.perform(get("/user/details/login")).andDo(print()).andExpect(status().isFound()).andExpect(view().name("redirect:/user/list"));
+        verify(service, Mockito.times(1)).getUser("login");
+    }
+
+    @Test
+    public void userDetails_UserClientException() throws Exception {
+        // Arrange
+        User user = new User();
+        when(service.getUser(anyString())).thenThrow(UserClientException.class);
+
+        // Act
+        mockMvc.perform(get("/user/details/login")).andDo(print()).andExpect(status().isFound()).andExpect(view().name("redirect:/user/list"));
+
+        // Assert
         verify(service, Mockito.times(1)).getUser("login");
     }
 

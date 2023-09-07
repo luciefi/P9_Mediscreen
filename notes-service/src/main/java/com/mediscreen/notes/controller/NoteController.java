@@ -84,7 +84,7 @@ public class NoteController {
     @ExceptionHandler({ ConstraintViolationException.class, MethodArgumentNotValidException.class})
     public ResponseEntity<?> handleConstraintException(Exception e) {
         logger.error("Invalid parameter: {}", e.getMessage());
-        return new ResponseEntity<>("Invalid parameter: {}" + e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Invalid parameter: " + e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

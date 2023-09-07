@@ -63,7 +63,7 @@ public class NoteClientFallbackFactory implements FallbackFactory<NoteClient> {
                     throw new NoteClientException(message + " (Bad request)");
                 }
                 if (cause instanceof FeignException.NotFound) {
-                    throw new NoteClientException(message + " (Not Found)");
+                    throw new NoteClientException(message + " (Not found)");
                 }
                 if (cause instanceof RetryableException) {
                     throw new UnavailableNoteClientException(message + " Service is unavailable.");
